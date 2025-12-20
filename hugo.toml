@@ -1,46 +1,27 @@
 baseURL = "https://devestacion.github.io/heyron/"
 languageCode = "en-us"
 title = "HeyRon"
-theme = "PaperMod"
+theme = "dream"
+defaultContentLanguage = "en"
 
 [params]
-  env = "production"
-  description = "Personal blog and thoughts"
   author = "Ron"
+  description = "Personal blog and thoughts"
   
-  # Dark mode toggle
-  defaultTheme = "auto"
-  disableThemeToggle = false
+  # Enable dark mode toggle
+  darknavbar = false
   
-  # Search
-  [params.fuseOpts]
-    isCaseSensitive = false
-    shouldSort = true
-    location = 0
-    distance = 1000
-    threshold = 0.4
-    minMatchCharLength = 0
-    keys = ["title", "permalink", "summary", "content"]
+  # Enable search
+  enableSearch = true
+  
+  # Avatar (optional - uncomment and add your avatar image)
+  # avatar = "/img/avatar.jpg"
+  
+  # Social links (optional - uncomment and add your accounts)
+  # email = "your@email.com"
+  # github = "DevEstacion"
+  # twitter = "yourusername"
 
-# Enable search
+# Enable JSON output for search
 [outputs]
   home = ["HTML", "RSS", "JSON"]
-
-# Menu
-[[menu.main]]
-  identifier = "posts"
-  name = "Posts"
-  url = "/posts/"
-  weight = 10
-
-[[menu.main]]
-  identifier = "about"
-  name = "About"
-  url = "/about/"
-  weight = 20
-
-[[menu.main]]
-  identifier = "search"
-  name = "Search"
-  url = "/search/"
-  weight = 30
