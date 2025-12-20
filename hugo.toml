@@ -7,7 +7,7 @@ theme = 'dream'
 [params]
   # Enable Zen mode for clean, focused layout
   zenMode = true
-  
+
   # Required for light/dark mode toggle
   lightTheme = "emerald"
   darkTheme = "forest"
