@@ -1,12 +1,12 @@
 ---
-title: "Welcome to HeyRon"
+title: "Welcome to heyron"
 date: 2025-12-20T00:00:00Z
 draft: false
 tags: ["welcome", "introduction"]
 categories: ["general"]
 ---
 
-Welcome to my blog! This is the first post on HeyRon, a Hugo-powered blog with automated deployment and commenting system.
+Welcome to my blog! This is the first post on heyron, a Hugo-powered blog with automated deployment and commenting system.
 
 ## What to Expect
 

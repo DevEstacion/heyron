@@ -1,7 +1,7 @@
 baseURL = 'https://heyron.dev/'
 defaultContentLanguage = 'en'
 languageCode = 'en-us'
-title = 'HeyRon'
+title = 'heyron'
 theme = 'dream'
 
 [params]
@@ -23,6 +23,10 @@ theme = 'dream'
 
   # Enable Giscus comments
   giscus = true
+
+  # Footer configuration
+  siteStartYear = 2025
+  footerBottomText = "👋 Hi there! Thanks for stopping by."
 
   # Social links
   [params.social]

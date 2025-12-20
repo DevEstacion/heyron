@@ -4,7 +4,7 @@ date: 2025-12-20T00:00:00Z
 draft: false
 ---
 
-# About HeyRon
+# About heyron
 
 This is a Hugo-powered blog built with the Dream theme. It features automated deployment through GitHub Actions and an integrated commenting system using Giscus.
 
