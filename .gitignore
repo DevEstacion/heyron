@@ -1,0 +1,29 @@
+# Hugo generated files
+/public/
+/resources/_gen/
+/resources/
+/.hugo_build.lock
+
+# Build artifacts
+*.bak
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node modules (if using)
+node_modules/
+package-lock.json
+
+# Local testing
+.env
+.env.local

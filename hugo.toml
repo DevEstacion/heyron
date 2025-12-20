@@ -1,0 +1,29 @@
+baseURL = 'https://devestacion.github.io/heyron/'
+languageCode = 'en-us'
+title = 'HeyRon'
+theme = 'dream'
+
+[params]
+  author = 'Ron'
+  description = 'A Hugo blog with automated deployment'
+  avatar = ''
+  headerTitle = 'HeyRon'
+  motto = 'Writing and sharing thoughts'
+  
+  # Enable dark mode by default
+  darkMode = true
+  
+  # Enable search
+  enableSearch = true
+  
+  # Social links
+  [params.social]
+    # github = 'DevEstacion'
+    # twitter = 'yourtwitterhandle'
+    # email = 'your@email.com'
+  
+  # Navigation
+  [params.navigation]
+    home = true
+    posts = true
+    about = true
