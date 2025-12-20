@@ -1,4 +1,5 @@
 baseURL = 'https://devestacion.github.io/heyron/'
+defaultContentLanguage = 'en'
 languageCode = 'en-us'
 title = 'HeyRon'
 theme = 'dream'
