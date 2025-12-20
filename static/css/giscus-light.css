@@ -1,0 +1,57 @@
+/* Giscus Light Theme - Matches daisyUI Emerald */
+:root {
+  --color-prettylights-syntax-comment: #6b7280;
+  --color-prettylights-syntax-constant: #047857;
+  --color-prettylights-syntax-entity: #059669;
+  --color-prettylights-syntax-storage-modifier-import: #111827;
+  --color-prettylights-syntax-entity-tag: #10b981;
+  --color-prettylights-syntax-keyword: #047857;
+  --color-prettylights-syntax-string: #065f46;
+  --color-prettylights-syntax-variable: #064e3b;
+  --color-prettylights-syntax-brackethighlighter-unmatched: #991b1b;
+  --color-prettylights-syntax-invalid-illegal-text: #fef2f2;
+  --color-prettylights-syntax-invalid-illegal-bg: #991b1b;
+  --color-prettylights-syntax-carriage-return-text: #fef2f2;
+  --color-prettylights-syntax-carriage-return-bg: #991b1b;
+  --color-prettylights-syntax-string-regexp: #047857;
+  --color-prettylights-syntax-markup-list: #3b3b2f;
+  --color-prettylights-syntax-markup-heading: #059669;
+  --color-prettylights-syntax-markup-italic: #111827;
+  --color-prettylights-syntax-markup-bold: #111827;
+  --color-prettylights-syntax-markup-deleted-text: #991b1b;
+  --color-prettylights-syntax-markup-deleted-bg: #fee;
+  --color-prettylights-syntax-markup-inserted-text: #047857;
+  --color-prettylights-syntax-markup-inserted-bg: #d1fae5;
+  --color-prettylights-syntax-markup-changed-text: #ea580c;
+  --color-prettylights-syntax-markup-changed-bg: #fed7aa;
+  --color-prettylights-syntax-markup-ignored-text: #f9fafb;
+  --color-prettylights-syntax-markup-ignored-bg: #047857;
+  --color-prettylights-syntax-meta-diff-range: #7c3aed;
+  --color-prettylights-syntax-brackethighlighter-angle: #6b7280;
+  --color-prettylights-syntax-sublimelinter-gutter-mark: #9ca3af;
+  --color-prettylights-syntax-constant-other-reference-link: #065f46;
+
+  /* Main colors */
+  --color-canvas-default: #ffffff;
+  --color-canvas-subtle: #f9fafb;
+  --color-border-default: #d1d5db;
+  --color-border-muted: #e5e7eb;
+
+  /* Text colors */
+  --color-fg-default: #1f2937;
+  --color-fg-muted: #6b7280;
+  --color-fg-subtle: #9ca3af;
+
+  /* Accent colors - Emerald theme */
+  --color-accent-fg: #047857;
+  --color-accent-emphasis: #059669;
+  --color-accent-muted: #d1fae5;
+  --color-accent-subtle: #ecfdf5;
+
+  /* Buttons */
+  --color-btn-primary-bg: #10b981;
+  --color-btn-primary-border: #059669;
+  --color-btn-primary-text: #ffffff;
+  --color-btn-primary-hover-bg: #059669;
+  --color-btn-primary-hover-border: #047857;
+}

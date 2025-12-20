@@ -1,25 +1,28 @@
 <div id="giscus-comments"></div>
 <script src="https://giscus.app/client.js"
         data-repo="DevEstacion/heyron"
-        data-repo-id="YOUR_REPO_ID"
-        data-category="General"
-        data-category-id="YOUR_CATEGORY_ID"
+        data-repo-id="R_kgDOQsC06g"
+        data-category="Comments"
+        data-category-id="DIC_kwDOQsC06s4C0DSl"
         data-mapping="pathname"
         data-strict="0"
         data-reactions-enabled="1"
         data-emit-metadata="0"
-        data-input-position="bottom"
-        data-theme="preferred_color_scheme"
+        data-input-position="top"
+        data-theme="https://heyron.dev/css/giscus-light.css"
         data-lang="en"
+        data-loading="lazy"
         crossorigin="anonymous"
         async>
 </script>
 <script>
-  // Update Giscus theme when dark mode changes
+  // Dynamically switch Giscus theme based on Dream theme's dark mode
   document.addEventListener('alpine:initialized', () => {
     Alpine.effect(() => {
       const isDark = Alpine.store('darkMode').isDark();
-      const theme = isDark ? 'dark' : 'light';
+      const theme = isDark
+        ? 'https://heyron.dev/css/giscus-dark.css'
+        : 'https://heyron.dev/css/giscus-light.css';
       const iframe = document.querySelector('iframe.giscus-frame');
       if (iframe) {
         iframe.contentWindow.postMessage(
