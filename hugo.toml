@@ -11,7 +11,7 @@ theme = 'dream'
 
   author = 'ron'
   description = 'A mind dump'
-  avatar = ''
+  avatar = 'img/avatar.jpg'
   headerTitle = 'heyron'
   motto = 'Writing and sharing thoughts'
 
