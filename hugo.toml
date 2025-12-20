@@ -9,10 +9,10 @@ theme = 'dream'
   lightTheme = "emerald"
   darkTheme = "forest"
 
-  author = 'Ron'
-  description = 'A Hugo blog with automated deployment'
+  author = 'ron'
+  description = 'A mind dump'
   avatar = ''
-  headerTitle = 'HeyRon'
+  headerTitle = 'heyron'
   motto = 'Writing and sharing thoughts'
 
   # Enable search
@@ -24,8 +24,8 @@ theme = 'dream'
   # Social links
   [params.social]
     # github = 'DevEstacion'
-    # twitter = 'yourtwitterhandle'
-    # email = 'your@email.com'
+    # twitter = '@ronskidude'
+    # email = 'devestacion@gmail.com'
 
   # Navigation
   [params.navigation]
