@@ -3,27 +3,70 @@
 /resources/_gen/
 /resources/
 /.hugo_build.lock
+/assets/jsconfig.json
 
 # Build artifacts
 *.bak
 *.tmp
+*.log
 
 # OS files
 .DS_Store
 Thumbs.db
 desktop.ini
-
-# IDE files
-.vscode/
-.idea/
 *.swp
 *.swo
 *~
 
-# Node modules (if using)
+# IDE and Editor files
+.vscode/
+.idea/
+*.code-workspace
+.history/
+
+# Node modules and dependencies
 node_modules/
 package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
-# Local testing
+# Local testing and development
 .env
 .env.local
+.env.*.local
+
+# Playwright MCP artifacts
+.playwright-mcp/
+
+# Backup directory
+.backup/
+
+# Hugo server lock
+.hugo_server.lock
+
+# macOS
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+[Dd]esktop.ini
+
+# Editor directories and files
+*~
+.project
+.classpath
+.settings/
+*.launch
+.buildpath
+.externalToolBuilders/
+*.sublime-workspace
+*.sublime-project
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+.sass-cache/

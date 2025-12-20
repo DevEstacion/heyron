@@ -1,0 +1,20 @@
+# CODEOWNERS file for HeyRon repository
+# These owners will be the default owners for everything in the repo
+# They will be requested for review when someone opens a pull request
+
+# Global ownership
+* @DevEstacion
+
+# Hugo configuration
+/hugo.toml @DevEstacion
+/.github/workflows/ @DevEstacion
+
+# Content
+/content/ @DevEstacion
+
+# Layouts and theme customization
+/layouts/ @DevEstacion
+
+# Assets
+/assets/ @DevEstacion
+/static/ @DevEstacion

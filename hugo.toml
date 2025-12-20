@@ -4,24 +4,28 @@ title = 'HeyRon'
 theme = 'dream'
 
 [params]
+  # Required for light/dark mode toggle
+  lightTheme = "emerald"
+  darkTheme = "forest"
+
   author = 'Ron'
   description = 'A Hugo blog with automated deployment'
   avatar = ''
   headerTitle = 'HeyRon'
   motto = 'Writing and sharing thoughts'
-  
-  # Enable dark mode by default
-  darkMode = true
-  
+
   # Enable search
   enableSearch = true
-  
+
+  # Enable Giscus comments
+  giscus = true
+
   # Social links
   [params.social]
     # github = 'DevEstacion'
     # twitter = 'yourtwitterhandle'
     # email = 'your@email.com'
-  
+
   # Navigation
   [params.navigation]
     home = true
