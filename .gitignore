@@ -41,6 +41,11 @@ pnpm-lock.yaml
 # Backup directory
 .backup/
 
+# Medium export automation
+.github/medium-html/
+.github/scripts/node_modules/
+.github/scripts/package-lock.json
+
 # Hugo server lock
 .hugo_server.lock
 

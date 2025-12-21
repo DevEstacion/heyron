@@ -1,0 +1,22 @@
+{
+  "name": "medium-export-scripts",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Scripts to convert Hugo posts to Medium-compatible HTML",
+  "scripts": {
+    "export": "node convert-to-medium.mjs"
+  },
+  "keywords": [
+    "hugo",
+    "medium",
+    "markdown",
+    "export"
+  ],
+  "author": "Ron",
+  "license": "MIT",
+  "dependencies": {
+    "globby": "^14.0.2",
+    "isomorphic-dompurify": "^2.18.0",
+    "marked": "^14.1.3"
+  }
+}
