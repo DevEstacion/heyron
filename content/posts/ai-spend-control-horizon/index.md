@@ -25,7 +25,7 @@ The cost? Estimates say compliance could add billions to AI development and oper
 
 One interesting idea: use computational cost to determine regulatory scrutiny instead of revenue. Companies training massive models face stricter rules; smaller operations get lighter oversight. Makes sense—compute footprint correlates with potential impact.
 
-![Regulatory burden visualization](images/image-1.png)
+![Regulatory burden visualization](images/image-1.jpg)
 
 ## Tech to the Rescue: Smarter AI, Cheaper Inference
 
@@ -62,7 +62,7 @@ graph TD
 
 Concise prompts save tokens. Fewer tokens mean lower costs. Future engineers will treat prompt optimization like query optimization in databases—every unnecessary word costs money.
 
-![Prompt engineering optimization comparison](images/image-2.png)
+![Prompt engineering optimization comparison](images/image-2.jpg)
 
 ### Specialized Hardware and Edge Computing
 
@@ -70,7 +70,7 @@ Concise prompts save tokens. Fewer tokens mean lower costs. Future engineers wil
 
 **Edge Computing** processes data locally—on your phone, in your car, at the sensor. Less reliance on centralized cloud infrastructure means lower costs and better privacy.
 
-![Edge computing for AI](images/image-3.png)
+![Edge computing for AI](images/image-3.jpg)
 
 ## Operational Savvy: Running AI Like a Well-Oiled (and Cheap) Machine
 
@@ -110,7 +110,7 @@ graph LR
 
 Cloud providers now offer serverless AI inference. You pay only for compute time when your model is actually running. Perfect for unpredictable workloads. No idle resource costs.
 
-![Serverless AI inference visualization](images/image-4.png)
+![Serverless AI inference visualization](images/image-4.jpg)
 
 ### Caching and Tiering
 
@@ -136,7 +136,7 @@ graph TD
 
 Financial Operations (FinOps) for AI means tracking and managing AI spend like you would cloud infrastructure. Use platforms to monitor costs across models and services. Set budgets. Enforce policies. Make AI spend visible and controllable.
 
-![FinOps for AI dashboard](images/image-5.png)
+![FinOps for AI dashboard](images/image-5.jpg)
 
 ## The Path Forward
 
