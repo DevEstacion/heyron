@@ -273,7 +273,9 @@ async function main() {
     // Process only specified files from environment variable
     const filesStr = process.env.CHANGED_FILES;
     const changedPaths = filesStr.split('\n').filter(Boolean);
-    markdownFiles = changedPaths.map(f => path.resolve(f));
+    // Resolve paths relative to repo root (two levels up from scripts directory)
+    const repoRoot = path.join(__dirname, '../..');
+    markdownFiles = changedPaths.map(f => path.join(repoRoot, f));
     console.log(`📝 Processing ${markdownFiles.length} changed file(s)\n`);
   } else {
     // Find all markdown files in content/posts (including subdirectories)
