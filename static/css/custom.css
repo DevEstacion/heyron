@@ -1,0 +1,42 @@
+/* Uniform cover image sizing for zen mode summaries */
+.dream-zen-posts figure img {
+  width: 120px !important;
+  height: 80px !important;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Enhanced TLDR section styling */
+#dream-single-post-content .tldr-section {
+  background: rgba(0, 0, 0, 0.03);
+  border-left: 3px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+html.dark #dream-single-post-content .tldr-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+#dream-single-post-content .tldr-section:hover {
+  background: rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+html.dark #dream-single-post-content .tldr-section:hover {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Style TLDR bullets */
+#dream-single-post-content .tldr-section ul {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  margin-top: 0;
+}
+
+#dream-single-post-content .tldr-section li {
+  margin-bottom: 0.5rem;
+}

@@ -70,3 +70,7 @@ theme = 'dream'
     home = true
     posts = true
     about = true
+
+  # Custom CSS
+  [params.Advanced]
+    customCSS = ['css/custom.css']

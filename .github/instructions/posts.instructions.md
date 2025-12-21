@@ -54,6 +54,22 @@ This guide helps AI (and future you) write posts that sound authentically like R
 ## Don't Overthink It
 If it reads like you and has a real takeaway, it's good. Ship it.
 
+## Optional Features
+
+### TL;DR Section
+Add a concise summary at the top of long posts using the `tldr` frontmatter field:
+
+```yaml
+tldr: "Quick 1-2 sentence summary of the entire post. Supports **Markdown** formatting."
+```
+
+**When to use:**
+- Posts longer than 5 minutes reading time
+- Technical deep-dives with multiple sections
+- Posts with actionable takeaways that benefit from upfront summary
+
+**Keep it short:** 1-3 sentences max. This is the elevator pitch, not a full summary.
+
 ## Post Images & Covers
 
 Store cover images in `post-images/` folder at the project root. When publishing a post:
@@ -77,3 +93,23 @@ Store cover images in `post-images/` folder at the project root. When publishing
 
 **Image specs:** ~640px wide, 3:2 to 16:9 aspect ratio, under 200KB.
 Sources: Unsplash (small size), Pexels, or your own photos.
+
+### Image Placeholders
+
+When drafting posts with AI-generated images in mind, use placeholder markers in this format:
+
+```
+IMAGE_PLACEHOLDER_N_DESCRIPTIVE_NAME: Detailed prompt for image generation
+```
+
+**Example:**
+```
+IMAGE_PLACEHOLDER_1_SERVER_ARCHITECTURE: A technical diagram showing microservices communicating via message queue with AWS Lambda functions processing events
+```
+
+**Rules:**
+- Keep placeholders on their own line
+- Use SCREAMING_SNAKE_CASE for the descriptive name
+- Write detailed prompts that specify composition, style, and key elements
+- Number sequentially (1, 2, 3, etc.)
+- Don't remove these when publishing—they're markers for manual image insertion
