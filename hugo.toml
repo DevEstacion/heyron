@@ -4,6 +4,34 @@ languageCode = 'en-us'
 title = 'heyron'
 theme = 'dream'
 
+# Minification settings
+[minify.tdewolff.html]
+  keepWhitespace = false
+  keepEndTags = true
+  keepQuotes = false
+
+[minify.tdewolff.css]
+  precision = 2
+  keepCSS2 = true
+
+[minify.tdewolff.js]
+  keepVarNames = false
+  noNullishOperator = false
+
+# Cache configuration
+[caches]
+  [caches.images]
+    dir = ':resourceDir/_gen'
+    maxAge = '720h'
+  [caches.assets]
+    dir = ':resourceDir/_gen'
+    maxAge = '720h'
+
+# Image processing settings
+[imaging]
+  quality = 85
+  resampleFilter = 'Lanczos'
+
 [params]
   # Enable Zen mode for clean, focused layout
   zenMode = true
