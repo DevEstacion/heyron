@@ -124,12 +124,26 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Create or checkout html branch (orphan - no history)
-          git fetch origin html:html 2>/dev/null || git checkout --orphan html || git checkout html
+          # Save HTML files to temp location
+          mkdir -p /tmp/medium-export
+          cp .github/medium-html/*.html /tmp/medium-export/ 2>/dev/null || true
 
-          # Clear branch and copy new HTML files
+          # Create or checkout html branch (orphan - no history)
+          git checkout --orphan html 2>/dev/null || git checkout html
+
+          # Clear everything
           git rm -rf . 2>/dev/null || true
-          cp -r .github/medium-html/* . 2>/dev/null || true
+          find . -mindepth 1 -delete 2>/dev/null || true
+
+          # Create .gitignore to exclude workflow files
+          cat > .gitignore << 'EOF'
+          .github/
+          node_modules/
+          .DS_Store
+          EOF
+
+          # Copy HTML files from temp location
+          cp /tmp/medium-export/*.html . 2>/dev/null || true
 
           # Create README for the branch
           cat > README.md << 'EOF'
@@ -153,8 +167,8 @@ jobs:
           # Store current commit SHA for next run
           echo "${{ github.sha }}" > .last-commit
 
-          # Commit and push
-          git add .
+          # Add all files (gitignore will exclude .github and node_modules)
+          git add -A
           git commit -m "Export posts to Medium HTML (run #${{ github.run_number }})" || echo "No changes to commit"
           git push origin html --force
 
