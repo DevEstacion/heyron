@@ -263,18 +263,31 @@ async function main() {
   // Create output directory
   await fs.mkdir(outputDir, { recursive: true });
 
-  // Find all markdown files in content/posts (including subdirectories)
-  const markdownFiles = await globby('**/*.md', {
-    cwd: contentDir,
-    absolute: true
-  });
+  // Check if specific files were passed via command line
+  const args = process.argv.slice(2);
+  const filesArg = args.find(arg => arg.startsWith('--files'));
 
-  if (markdownFiles.length === 0) {
-    console.error(`❌ No markdown files found in ${contentDir}`);
-    process.exit(1);
+  let markdownFiles;
+
+  if (filesArg && process.env.CHANGED_FILES) {
+    // Process only specified files from environment variable
+    const filesStr = process.env.CHANGED_FILES;
+    const changedPaths = filesStr.split('\n').filter(Boolean);
+    markdownFiles = changedPaths.map(f => path.resolve(f));
+    console.log(`📝 Processing ${markdownFiles.length} changed file(s)\n`);
+  } else {
+    // Find all markdown files in content/posts (including subdirectories)
+    markdownFiles = await globby('**/*.md', {
+      cwd: contentDir,
+      absolute: true
+    });
+    console.log(`📝 Processing ALL ${markdownFiles.length} markdown file(s)\n`);
   }
 
-  console.log(`📝 Found ${markdownFiles.length} markdown file(s)\n`);
+  if (markdownFiles.length === 0) {
+    console.error(`❌ No markdown files to process`);
+    process.exit(1);
+  }
 
   // Process each file
   const processed = [];

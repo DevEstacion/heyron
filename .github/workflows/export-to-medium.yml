@@ -2,6 +2,12 @@ name: Export Posts to Medium
 
 on:
   workflow_dispatch:
+    inputs:
+      force_all:
+        description: 'Force regenerate all posts'
+        required: false
+        default: false
+        type: boolean
   push:
     branches:
       - main
@@ -23,21 +29,96 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for git diff
+
+      - name: Get last processed commit
+        id: last_commit
+        run: |
+          # Try to fetch the html branch and read last commit SHA
+          if git fetch origin html:html 2>/dev/null; then
+            git checkout html
+            if [[ -f .last-commit ]]; then
+              LAST_COMMIT=$(cat .last-commit)
+              echo "sha=$LAST_COMMIT" >> $GITHUB_OUTPUT
+              echo "📌 Last processed commit: $LAST_COMMIT"
+            else
+              echo "sha=" >> $GITHUB_OUTPUT
+              echo "ℹ️ No .last-commit file found, will process all files"
+            fi
+            git checkout -
+          else
+            echo "sha=" >> $GITHUB_OUTPUT
+            echo "ℹ️ html branch doesn't exist yet, will process all files"
+          fi
+
+      - name: Detect changed markdown files
+        id: changes
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.force_all }}" == "true" ]]; then
+            echo "mode=all" >> $GITHUB_OUTPUT
+            echo "📝 Manual trigger with force_all - processing ALL posts"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "mode=all" >> $GITHUB_OUTPUT
+            echo "📝 Manual trigger - processing ALL posts"
+          else
+            # Get changed files between last successful run and now
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              BASE="${{ github.event.pull_request.base.sha }}"
+              HEAD="${{ github.event.pull_request.head.sha }}"
+            else
+              # Use last processed commit if available, otherwise use event.before
+              if [[ -n "${{ steps.last_commit.outputs.sha }}" ]]; then
+                BASE="${{ steps.last_commit.outputs.sha }}"
+                echo "🔍 Comparing against last processed commit: $BASE"
+              else
+                BASE="${{ github.event.before }}"
+                echo "🔍 No tracking file, comparing against: $BASE"
+              fi
+              HEAD="${{ github.sha }}"
+            fi
+
+            CHANGED_FILES=$(git diff --name-only --diff-filter=ACM $BASE $HEAD | grep '^content/posts/.*\.md$' || true)
+
+            if [[ -z "$CHANGED_FILES" ]]; then
+              echo "mode=none" >> $GITHUB_OUTPUT
+              echo "⚠️ No markdown files changed in content/posts/"
+            else
+              echo "mode=changed" >> $GITHUB_OUTPUT
+              echo "files<<EOF" >> $GITHUB_OUTPUT
+              echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+              echo "EOF" >> $GITHUB_OUTPUT
+              echo "📝 Changed files:"
+              echo "$CHANGED_FILES"
+            fi
+          fi
 
       - name: Set up Node.js
+        if: steps.changes.outputs.mode != 'none'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Install Node.js dependencies
+        if: steps.changes.outputs.mode != 'none'
         working-directory: .github/scripts
         run: npm install
 
       - name: Export posts to Medium HTML
+        if: steps.changes.outputs.mode != 'none'
         working-directory: .github/scripts
-        run: npm run export
+        env:
+          CHANGED_FILES: ${{ steps.changes.outputs.files }}
+          MODE: ${{ steps.changes.outputs.mode }}
+        run: |
+          if [[ "$MODE" == "all" ]]; then
+            npm run export
+          else
+            npm run export -- --files "$CHANGED_FILES"
+          fi
 
       - name: Push HTML files to html branch
+        if: steps.changes.outputs.mode != 'none'
         run: |
           # Configure git
           git config user.name "github-actions[bot]"
@@ -69,12 +150,16 @@ jobs:
           Last updated: $(date -u +"%Y-%m-%d %H:%M UTC")
           EOF
 
+          # Store current commit SHA for next run
+          echo "${{ github.sha }}" > .last-commit
+
           # Commit and push
           git add .
           git commit -m "Export posts to Medium HTML (run #${{ github.run_number }})" || echo "No changes to commit"
           git push origin html --force
 
       - name: Display summary
+        if: steps.changes.outputs.mode != 'none'
         run: |
           echo "## Medium Export Complete ✅" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
