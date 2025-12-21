@@ -4,6 +4,7 @@ date: 2025-12-20T00:00:00Z
 draft: false
 tags: ["welcome", "software-engineering"]
 categories: ["general"]
+cover: cover.jpg
 ---
 
 ## A New Space for Thoughts 🤖

@@ -53,3 +53,27 @@ This guide helps AI (and future you) write posts that sound authentically like R
 
 ## Don't Overthink It
 If it reads like you and has a real takeaway, it's good. Ship it.
+
+## Post Images & Covers
+
+Store cover images in `post-images/` folder at the project root. When publishing a post:
+
+1. Copy the desired image to a post folder using Hugo's page bundle structure:
+   `
+   content/posts/my-post/
+     ├── index.md
+     └── cover.jpg
+   `
+
+2. Add to frontmatter:
+   `yaml
+   cover: cover.jpg
+   `
+
+3. The theme will automatically:
+   - Optimize to WebP format
+   - Display in summary cards (96px width in Zen mode)
+   - Show at full width on the post page if `showSummaryCoverInPost: true`
+
+**Image specs:** ~640px wide, 3:2 to 16:9 aspect ratio, under 200KB.
+Sources: Unsplash (small size), Pexels, or your own photos.
