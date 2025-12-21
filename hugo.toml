@@ -28,6 +28,9 @@ theme = 'dream'
   siteStartYear = 2025
   footerBottomText = "👋 Hi there! Thanks for stopping by."
 
+  # Favicon
+  favicon = "favicon.ico"
+
   # Social links
   [params.social]
     # github = 'DevEstacion'
