@@ -4,20 +4,22 @@ date: 2025-12-20T00:00:00Z
 draft: false
 ---
 
-# About heyron
+# About Ron
 
-This is a Hugo-powered blog built with the Dream theme. It features automated deployment through GitHub Actions and an integrated commenting system using Giscus.
+Hey! I'm Ron, a Senior Software Engineer at **Nordstrom** where I optimize systems in regulated domains (PCI DSS, HIPAA). When things are broken or slow, I like to fix them—preferably in a way that saves money and ships faster. 🚀
 
-## About Me
+## What I Do
 
-Hi, I'm Ron! This is my personal space on the web where I share my thoughts and experiences.
+- **Backend Systems** - .NET, AWS, Kubernetes, Kafka. Built services that handle millions in transactions and high-traffic seasonality
+- **Cost & Reliability** - Cut credit decision latency 52%, saved ~$130k on compliance gaps, automated incident recovery to save engineering time
+- **AI Enablement** - Adopted Claude Code, AI agents, and MCP servers across teams; member of Nordstrom's AI Special Interest Group
 
-## Tech Stack
+## Outside of Work
 
-- **Hugo** - Static site generator
-- **Dream Theme** - Beautiful and responsive Hugo theme
-- **GitHub Pages** - Hosting
-- **GitHub Actions** - Automated deployment
-- **Giscus** - Comment system powered by GitHub Discussions
+I'm based in Lacey, Washington (PNW 🌲). When I'm not shipping code, you'll find me hiking, mountaineering, or planning the next summit.
 
-Feel free to reach out through the comments section on any post!
+## This Space
+
+heyron is a mind dump of thoughts on cloud economics, shipping velocity, observability, and how to build systems that don't keep you up at night. All thoughts are mine.
+
+**Got feedback or want to chat?** Drop a comment on any post!
