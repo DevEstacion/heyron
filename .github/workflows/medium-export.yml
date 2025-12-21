@@ -1,0 +1,68 @@
+name: Export Posts to Medium HTML
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'content/posts/**/*.md'
+  workflow_dispatch:
+
+jobs:
+  export-to-html:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install markdown2medium
+        run: pip install markdown2medium
+
+      - name: Convert posts to Medium HTML
+        run: |
+          mkdir -p html-exports/posts
+
+          for post_dir in content/posts/*/; do
+            if [ -f "${post_dir}index.md" ]; then
+              post_slug=$(basename "$post_dir")
+              echo "Processing: $post_slug"
+
+              python .github/scripts/strip-frontmatter.py \
+                "${post_dir}index.md" \
+                "$post_slug" \
+                "https://heyron.dev" > temp.md
+
+              markdown2medium temp.md > "html-exports/posts/${post_slug}.html"
+              rm temp.md
+            fi
+          done
+
+      - name: Push to html branch
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+          git checkout --orphan html || git checkout html
+          git rm -rf . || true
+
+          cp -r html-exports/* .
+
+          cat > README.md << 'EOF'
+          # Medium-Ready HTML Exports
+
+          Auto-generated HTML files from Hugo posts, ready for Medium.
+
+          Browse `posts/<post-slug>.html` and copy content to Medium.
+          Don't forget to set canonical URL back to https://heyron.dev/posts/<post-slug>/
+          EOF
+
+          git add .
+          git commit -m "Update Medium HTML exports from ${GITHUB_SHA}" || echo "No changes"
+          git push -f origin html
