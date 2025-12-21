@@ -1,27 +1,25 @@
 ---
-title: "Welcome to heyron"
+title: "Hey"
 date: 2025-12-20T00:00:00Z
 draft: false
-tags: ["welcome", "cloud", "optimization", "shipping"]
+tags: ["welcome", "software-engineering"]
 categories: ["general"]
 ---
 
 ## A New Space for Thoughts 🤖
 
-Welcome to heyron! This is where I dump thoughts on the stuff I care about: optimizing systems, enabling revenue (literally—cut decision latency 52% at work), and shipping fast without breaking things.
+Welcome to heyron! This is where I dump thoughts on software engineering, system design, and shipping fast without breaking things.
 
-I spend my days at **Nordstrom** building backend services in regulated domains (.NET, AWS, K8s). I see patterns in what works and what burns engineers out. I've also become genuinely excited about **AI tools**—not hype, but real productivity wins with Claude and AI agents.
+I spend my days at **Nordstrom** building backend and frontend services in environments where reliability and cost matter. I see patterns in what works and what burns engineers out. I'm also genuinely excited about **AI tools**—not hype, but real productivity wins with Claude and AI agents.
 
 ## What You'll Find Here
 
-- **Cost & Reliability** - How to do more with less cloud spend and fewer incidents
-- **.NET & AWS** - Real patterns from high-traffic, mission-critical systems
-- **Shipping Velocity** - CI/CD, observability, team tooling
-- **Lessons from Regulated Domains** - What actually matters in PCI/HIPAA environments (without oversharing secrets)
-- **AI Adoption** - Prompt engineering, AI agents, where they actually help
+Real examples from the trenches. Lessons learned. Some tangents. Things that actually matter when you're shipping systems people depend on.
+
+Topics include: system design, observability, cost optimization, shipping velocity, AI tools, and whatever else I'm thinking about. No specific tech stack—I care more about the problem-solving than the language.
 
 ## The Vibe
 
-Think "mind dump" over "polished articles." Real examples. Raw takeaways. Some tangents. Hopefully useful to other engineers building and shipping at scale.
+Think "mind dump" over "polished articles." Raw takeaways. You'll hear about what worked, what didn't, and why. Hopefully useful to other engineers building at scale.
 
 Thanks for visiting. Drop a comment if something resonates. 👋
