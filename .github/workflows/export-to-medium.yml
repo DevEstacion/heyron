@@ -2,12 +2,6 @@ name: Export Posts to Medium
 
 on:
   workflow_dispatch:
-    inputs:
-      post_name:
-        description: 'Specific post to export (leave empty for all)'
-        required: false
-        default: ''
-        type: string
   push:
     branches:
       - main
@@ -34,8 +28,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: .github/scripts/package-lock.json
 
       - name: Install Node.js dependencies
         working-directory: .github/scripts
