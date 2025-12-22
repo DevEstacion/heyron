@@ -53,27 +53,26 @@
     {{ partial "scripts.html" . }}
     {{ block "js" . }} {{ end }}
 
+    {{ range site.Params.Advanced.customJS }}
+    <script defer src="{{ . | relURL }}"></script>
+    {{ end }}
+
     {{ if .Store.Get "hasMermaid" }}
       <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs';
 
         // Convert OKLCH/CSS color to hex format that Mermaid understands
         function colorToHex(colorValue) {
-          // If it's already a hex color, return it
           if (colorValue.startsWith('#')) {
             return colorValue;
           }
 
-          // Create a temporary element to let the browser compute the color
           const temp = document.createElement('div');
           temp.style.color = colorValue;
           document.body.appendChild(temp);
-
-          // Get the computed RGB value
           const computed = getComputedStyle(temp).color;
           document.body.removeChild(temp);
 
-          // Extract RGB values from rgb() or rgba() format
           const match = computed.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
           if (match) {
             const r = parseInt(match[1]).toString(16).padStart(2, '0');
@@ -82,84 +81,82 @@
             return `#${r}${g}${b}`;
           }
 
-          // Fallback to a neutral color if conversion fails
           return '#808080';
         }
 
         // Get theme colors dynamically from CSS variables and convert to hex
         function getThemeColors() {
           const style = getComputedStyle(document.documentElement);
-
-          // Determine if we're in dark mode by checking background brightness
           const bgColor = style.getPropertyValue('--color-base-100').trim();
           const isDark = bgColor.includes('oklch') && parseFloat(bgColor.match(/oklch\((\d+(?:\.\d+)?)/)?.[1] || 100) < 50;
-
-          // Use white text in dark mode, dark text in light mode
           const textColor = isDark ? '#ffffff' : '#1f1e1e';
 
           return {
             theme: 'base',
             themeVariables: {
-              // Use light backgrounds with contrasting text
-              primaryColor: '#f5f1ed', // Light background for nodes
+              primaryColor: '#f5f1ed',
               primaryTextColor: textColor,
               primaryBorderColor: colorToHex(style.getPropertyValue('--color-primary').trim()),
-
-              secondaryColor: '#dad2bc', // Light tan background
+              secondaryColor: '#dad2bc',
               secondaryTextColor: textColor,
-
-              tertiaryColor: '#a99985', // Medium khaki background
+              tertiaryColor: '#a99985',
               tertiaryTextColor: textColor,
-
               lineColor: colorToHex(style.getPropertyValue('--color-primary').trim()),
               textColor: colorToHex(style.getPropertyValue('--color-base-content').trim()),
-
               mainBkg: colorToHex(style.getPropertyValue('--color-base-100').trim()),
               secondBkg: colorToHex(style.getPropertyValue('--color-base-200').trim()),
-
-              // Node colors with high contrast
               nodeBorder: colorToHex(style.getPropertyValue('--color-primary').trim()),
               nodeTextColor: textColor,
               labelTextColor: colorToHex(style.getPropertyValue('--color-base-content').trim()),
               labelBackgroundColor: colorToHex(style.getPropertyValue('--color-base-100').trim()),
-
               clusterBkg: colorToHex(style.getPropertyValue('--color-base-200').trim()),
               clusterBorder: colorToHex(style.getPropertyValue('--color-base-300').trim()),
-
               titleColor: colorToHex(style.getPropertyValue('--color-base-content').trim()),
               edgeLabelBackground: colorToHex(style.getPropertyValue('--color-base-100').trim())
             }
           };
         }
 
-        // Initialize with current theme colors
+        function renderMermaidDiagrams() {
+          const diagrams = document.querySelectorAll('.mermaid');
+          diagrams.forEach(el => {
+            el.removeAttribute('data-processed');
+            if (!el.dataset.diagram) {
+              el.dataset.diagram = el.textContent;
+            }
+            el.textContent = el.dataset.diagram;
+            el.classList.add('mermaid-is-rendering');
+          });
+
+          return mermaid.run({ querySelector: '.mermaid' }).finally(() => {
+            diagrams.forEach(el => {
+              el.classList.remove('mermaid-is-rendering');
+            });
+          });
+        }
+
+        function onRenderComplete() {
+          if (window.enableMermaidPanZoom) {
+            window.enableMermaidPanZoom();
+          }
+          document.dispatchEvent(new CustomEvent('mermaid:rendered'));
+        }
+
         mermaid.initialize({
-          startOnLoad: true,
+          startOnLoad: false,
           ...getThemeColors()
         });
 
-        // Watch for theme changes and re-render diagrams
+        renderMermaidDiagrams().then(onRenderComplete).catch(onRenderComplete);
+
         document.addEventListener('alpine:initialized', () => {
           Alpine.effect(() => {
-            const isDarkMode = Alpine.store('darkMode').isDark();
-
-            // Re-initialize with new theme colors
             mermaid.initialize({
               startOnLoad: false,
               ...getThemeColors()
             });
 
-            // Re-render all diagrams
-            const diagrams = document.querySelectorAll('.mermaid');
-            diagrams.forEach(el => {
-              el.removeAttribute('data-processed');
-              if (!el.dataset.diagram) {
-                el.dataset.diagram = el.textContent;
-              }
-              el.textContent = el.dataset.diagram;
-            });
-
-            mermaid.run();
+            renderMermaidDiagrams().then(onRenderComplete).catch(onRenderComplete);
           });
         });
       </script>
@@ -169,15 +166,11 @@
       {{ partialCached "mathjax.html" . }}
     {{ end }}
 
-    {{ range site.Params.Advanced.customJS }}
-    <script src="{{ . | relURL }}"></script>
-    {{ end }}
-
     {{ if site.Config.Services.GoogleAnalytics.ID }}
     {{ template "_internal/google_analytics.html" . }}
     {{ end }}
 
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js" integrity="sha256-/IFmi82bIhdYWctu0UddSlJqpnzWm7Vh2C4CM32wF/k=" crossorigin="anonymous"></script>
-    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js" integrity="sha256-mr7eJMX3VC3F7G32mk4oWp1C6a2tlMYxUdptfT7uKI8=" crossorigin="anonymous"></script>
+    <script nomodule defer src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js" integrity="sha256-mr7eJMX3VC3F7G32mk4oWp1C6a2tlMYxUdptfT7uKI8=" crossorigin="anonymous"></script>
   </body>
 </html>
