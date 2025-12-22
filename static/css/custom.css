@@ -41,9 +41,15 @@ html.dark #dream-single-post-content .tldr-section:hover {
   margin-bottom: 0.5rem;
 }
 
-/* Widen content area for better space utilization on larger screens */
+/* Widen content areas for better space utilization on larger screens */
 @media (min-width: 1024px) {
-  #dream-single-post-main.prose {
-    max-width: 85ch; /* ~850px, significantly wider for desktop viewing */
+  /* Override theme's 65ch constraint globally for nav, footer, and homepage */
+  .max-w-\[65ch\] {
+    max-width: 85ch !important;
+  }
+
+  /* Post content area (prose has its own max-width) */
+  article.prose {
+    max-width: 85ch !important;
   }
 }
