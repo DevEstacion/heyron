@@ -53,3 +53,10 @@ html.dark #dream-single-post-content .tldr-section:hover {
     max-width: 85ch !important;
   }
 }
+
+/* Center images horizontally in post content */
+.prose img,
+article.prose img {
+  display: block;
+  margin-inline: auto;
+}

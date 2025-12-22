@@ -59,6 +59,9 @@ theme = 'dream'
   # Favicon
   favicon = "favicon.ico"
 
+  # Navigation items order (exclude 'about' to hide it)
+  reorderNavItems = ["search", "rss", "posts", "categories", "tags"]
+
   # Social links
   [params.social]
     # github = 'DevEstacion'
