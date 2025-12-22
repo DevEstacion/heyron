@@ -73,4 +73,4 @@ theme = 'dream'
 
   # Custom CSS
   [params.Advanced]
-    customCSS = ['css/custom.css']
+    customCSS = ['css/theme-colors.css', 'css/custom.css']

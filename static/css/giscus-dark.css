@@ -31,27 +31,27 @@
   --color-prettylights-syntax-sublimelinter-gutter-mark: #484f58;
   --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
 
-  /* Main colors - Forest theme inspired */
-  --color-canvas-default: #1a1a1a;
-  --color-canvas-subtle: #0d1117;
-  --color-border-default: #30363d;
-  --color-border-muted: #21262d;
+  /* Main colors - Use CSS variables from theme-colors.css dark mode */
+  --color-canvas-default: var(--color-base-100);
+  --color-canvas-subtle: var(--color-base-200);
+  --color-border-default: var(--color-base-300);
+  --color-border-muted: var(--slate-grey-700);
 
-  /* Text colors */
-  --color-fg-default: #e8e8e8;
-  --color-fg-muted: #8b949e;
-  --color-fg-subtle: #6e7681;
+  /* Text colors - Use CSS variables from theme-colors.css dark mode */
+  --color-fg-default: var(--color-base-content);
+  --color-fg-muted: var(--slate-grey-400);
+  --color-fg-subtle: var(--slate-grey-500);
 
-  /* Accent colors - Forest green theme */
-  --color-accent-fg: #7ee787;
-  --color-accent-emphasis: #238636;
-  --color-accent-muted: rgba(46, 160, 67, 0.4);
-  --color-accent-subtle: rgba(46, 160, 67, 0.15);
+  /* Accent colors - Use primary color from theme-colors.css dark mode */
+  --color-accent-fg: var(--color-primary);
+  --color-accent-emphasis: var(--color-primary);
+  --color-accent-muted: var(--slate-grey-600);
+  --color-accent-subtle: var(--slate-grey-700);
 
-  /* Buttons */
-  --color-btn-primary-bg: #238636;
-  --color-btn-primary-border: #2ea043;
-  --color-btn-primary-text: #ffffff;
-  --color-btn-primary-hover-bg: #2ea043;
-  --color-btn-primary-hover-border: #3fb950;
+  /* Buttons - Use primary color from theme-colors.css dark mode */
+  --color-btn-primary-bg: var(--color-primary);
+  --color-btn-primary-border: var(--color-primary);
+  --color-btn-primary-text: var(--color-primary-content);
+  --color-btn-primary-hover-bg: var(--slate-grey-300);
+  --color-btn-primary-hover-border: var(--slate-grey-300);
 }

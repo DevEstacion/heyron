@@ -30,7 +30,7 @@
 {{ end }}
 
 {{ define "main" }}
-<div class="lg:grid lg:grid-cols-4 gap-4 mt-4 px-4">
+<div class="lg:grid lg:grid-cols-6 gap-4 mt-4 px-4">
   <div class="hidden lg:block">
     {{ if fileExists "layouts/partials/adsense.html" }}
       <div class="dream-adsense w-2/3">
@@ -39,7 +39,7 @@
     {{ end }}
   </div>
 
-  <div class="lg:col-span-2">
+  <div class="lg:col-span-4">
     <article class="mx-auto prose prose-quoteless dark:prose-invert" id="dream-single-post-main" itemscope itemtype="http://schema.org/Article">
       {{ template "_internal/schema.html" . }}
 

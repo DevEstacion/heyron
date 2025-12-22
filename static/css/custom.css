@@ -40,3 +40,10 @@ html.dark #dream-single-post-content .tldr-section:hover {
 #dream-single-post-content .tldr-section li {
   margin-bottom: 0.5rem;
 }
+
+/* Widen content area for better space utilization on larger screens */
+@media (min-width: 1024px) {
+  #dream-single-post-main.prose {
+    max-width: 85ch; /* ~850px, significantly wider for desktop viewing */
+  }
+}
