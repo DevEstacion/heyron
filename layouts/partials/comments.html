@@ -9,7 +9,7 @@
         data-reactions-enabled="1"
         data-emit-metadata="0"
         data-input-position="top"
-        data-theme="https://heyron.dev/css/giscus-light.css"
+        data-theme="{{ absURL "css/giscus-light.css" }}"
         data-lang="en"
         data-loading="lazy"
         crossorigin="anonymous"
@@ -21,8 +21,8 @@
     Alpine.effect(() => {
       const isDark = Alpine.store('darkMode').isDark();
       const theme = isDark
-        ? 'https://heyron.dev/css/giscus-dark.css'
-        : 'https://heyron.dev/css/giscus-light.css';
+        ? '{{ absURL "css/giscus-dark.css" }}'
+        : '{{ absURL "css/giscus-light.css" }}';
       const iframe = document.querySelector('iframe.giscus-frame');
       if (iframe) {
         iframe.contentWindow.postMessage(

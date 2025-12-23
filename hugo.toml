@@ -76,7 +76,7 @@ theme = 'dream'
 
   # Custom CSS
   [params.Advanced]
-     customCSS = ['css/theme-colors.css', 'css/custom.css']
+     customCSS = ['css/custom.css']
      customJS = ['js/mermaid-panzoom.js']
 
 [markup]
