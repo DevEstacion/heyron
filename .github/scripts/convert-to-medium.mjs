@@ -16,6 +16,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { globby } from 'globby';
 import matter from 'gray-matter';
+import puppeteer from 'puppeteer';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const BASE_URL = "https://heyron.dev";
@@ -23,10 +24,83 @@ const ALLOWED_URI_REGEX = /^(https?:|images\/)/i;
 
 // Track images that need to be copied
 const imagesToCopy = [];
+const svgConversions = new Map(); // Map SVG filenames to PNG filenames
+let browser = null;
+
+// Get or create browser instance
+async function getBrowser() {
+  if (!browser) {
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+  }
+  return browser;
+}
+
+// Close browser instance
+async function closeBrowser() {
+  if (browser) {
+    await browser.close();
+    browser = null;
+  }
+}
+
+// Convert SVG to PNG using Puppeteer with high quality settings
+async function convertSvgToPng(svgPath, pngPath) {
+  try {
+    const svgContent = await fs.readFile(svgPath, 'utf-8');
+    const browserInstance = await getBrowser();
+    const page = await browserInstance.newPage();
+
+    // Ultra-high resolution: deviceScaleFactor 4 = 4x pixel density
+    await page.setViewport({ width: 3000, height: 3000, deviceScaleFactor: 4 });
+
+    // Set HTML with proper font loading
+    await page.setContent(`
+      <html>
+        <head>
+          <style>
+            body { margin: 0; padding: 0; }
+            svg { display: block; }
+          </style>
+        </head>
+        <body>${svgContent}</body>
+      </html>
+    `, { waitUntil: 'networkidle0' });
+
+    // Wait for fonts to load
+    await page.evaluate(() => document.fonts.ready);
+
+    const svgElement = await page.$('svg');
+    if (!svgElement) {
+      throw new Error('No SVG element found in file');
+    }
+
+    const boundingBox = await svgElement.boundingBox();
+    if (!boundingBox) {
+      throw new Error('Could not determine SVG dimensions');
+    }
+
+    await page.screenshot({
+      path: pngPath,
+      type: 'png',
+      clip: boundingBox,
+      omitBackground: false
+    });
+
+    await page.close();
+    return true;
+  } catch (error) {
+    console.warn(`  ⚠️  Failed to convert SVG to PNG: ${error.message}`);
+    return false;
+  }
+}
 
 // Convert image paths to relative paths and track for copying
 function convertImagePaths(content, postSlug, sourcePath) {
   imagesToCopy.length = 0; // Reset for each post
+  svgConversions.clear();
 
   const imagePattern = /!\[(.*?)\]\(((?!https?:\/\/)[^)]+)\)/g;
   let updated = content.replace(imagePattern, (match, altText, imagePath) => {
@@ -37,13 +111,21 @@ function convertImagePaths(content, postSlug, sourcePath) {
     const sourceImagePath = path.resolve(path.dirname(sourcePath), imagePath);
     const imageFilename = path.basename(imagePath);
 
+    // If it's an SVG, track the conversion
+    let outputFilename = imageFilename;
+    if (path.extname(imageFilename).toLowerCase() === '.svg') {
+      outputFilename = imageFilename.replace(/\.svg$/i, '.png');
+      svgConversions.set(imageFilename, outputFilename);
+    }
+
     imagesToCopy.push({
       source: sourceImagePath,
-      filename: imageFilename
+      filename: imageFilename,
+      outputFilename: outputFilename
     });
 
-    // Use relative path in HTML
-    return `![${altText}](images/${imageFilename})`;
+    // Use relative path in HTML with converted extension
+    return `![${altText}](images/${outputFilename})`;
   });
 
   const htmlImgPattern = /<img([^>]*?)src=["'](?!https?:\/\/)([^"'>]+)["']([^>]*?)>/gi;
@@ -54,13 +136,21 @@ function convertImagePaths(content, postSlug, sourcePath) {
     const sourceImagePath = path.resolve(path.dirname(sourcePath), cleanedPath);
     const imageFilename = path.basename(cleanedPath);
 
+    // If it's an SVG, track the conversion
+    let outputFilename = imageFilename;
+    if (path.extname(imageFilename).toLowerCase() === '.svg') {
+      outputFilename = imageFilename.replace(/\.svg$/i, '.png');
+      svgConversions.set(imageFilename, outputFilename);
+    }
+
     imagesToCopy.push({
       source: sourceImagePath,
-      filename: imageFilename
+      filename: imageFilename,
+      outputFilename: outputFilename
     });
 
-    // Use relative path in HTML
-    return `<img${before}src="images/${imageFilename}"${after}>`;
+    // Use relative path in HTML with converted extension
+    return `<img${before}src="images/${outputFilename}"${after}>`;
   });
 
   return updated;
@@ -140,14 +230,29 @@ async function processFile(inputPath, outputDir) {
   await fs.mkdir(postDir, { recursive: true });
   await fs.mkdir(imagesDir, { recursive: true });
 
-  // Copy image files to images/ subfolder
+  // Copy/convert image files to images/ subfolder
   for (const img of imagesToCopy) {
     try {
-      const destPath = path.join(imagesDir, img.filename);
-      await fs.copyFile(img.source, destPath);
-      console.log(`  ├─ Copied image: ${img.filename}`);
+      const destPath = path.join(imagesDir, img.outputFilename);
+      const ext = path.extname(img.filename).toLowerCase();
+
+      if (ext === '.svg') {
+        // Convert SVG to PNG
+        const success = await convertSvgToPng(img.source, destPath);
+        if (success) {
+          console.log(`  ├─ Converted SVG to PNG: ${img.filename} → ${img.outputFilename}`);
+        } else {
+          // Fallback: copy as-is if conversion fails
+          await fs.copyFile(img.source, destPath);
+          console.log(`  ├─ Copied (conversion failed): ${img.filename}`);
+        }
+      } else {
+        // Copy non-SVG images as-is
+        await fs.copyFile(img.source, destPath);
+        console.log(`  ├─ Copied image: ${img.filename}`);
+      }
     } catch (error) {
-      console.warn(`  ⚠️  Could not copy image ${img.filename}: ${error.message}`);
+      console.warn(`  ⚠️  Could not process image ${img.filename}: ${error.message}`);
     }
   }
 
@@ -316,7 +421,11 @@ async function processFile(inputPath, outputDir) {
 </html>`;
 
   await fs.writeFile(outputPath, fullHtml);
-  console.log(`✓ Converted: ${path.basename(inputPath)} → ${postSlug}/index.html (${imagesToCopy.length} images)`);
+
+  const svgCount = Array.from(svgConversions.keys()).length;
+  const totalImages = imagesToCopy.length;
+  console.log(`✓ Converted: ${path.basename(inputPath)} → ${postSlug}/index.html (${totalImages} images, ${svgCount} SVG→PNG)`);
+
   return outputPath;
 }
 
@@ -377,9 +486,16 @@ async function main() {
   console.log(`\n✅ Converted ${processed.length} file(s)`);
   console.log(`📁 Output directory: ${path.resolve(outputDir)}`);
 
+  // Clean up browser instance
+  await closeBrowser();
+
   if (hadErrors) {
     process.exitCode = 1;
   }
 }
 
-main().catch(console.error);
+main().catch(async (error) => {
+  console.error(error);
+  await closeBrowser();
+  process.exit(1);
+});
