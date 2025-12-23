@@ -1,0 +1,46 @@
+<a class="block my-8 relative" href="{{ .RelPermalink }}">
+  {{ if .Params.cover }}
+  <figure class="mb-4">
+    {{ with .Resources.Get .Params.cover }}
+    {{ if eq .MediaType.SubType "svg" }}
+      <img src="{{ .RelPermalink }}" alt="{{ .Title }}" />
+    {{ else }}
+      {{/* Resize to max 800px before WebP conversion to avoid large file errors */}}
+      {{ $resized := .Resize "800x q85" }}
+      {{ $webp := $resized.Resize (printf "%dx%d webp q85" $resized.Width $resized.Height) }}
+      <picture>
+        <source srcset="{{ $webp.RelPermalink }}" type="image/webp" />
+        <img src="{{ $resized.RelPermalink }}" alt="{{ .Title }}" />
+      </picture>
+    {{ end }}
+    {{ else }}
+    <img src="{{ .Params.cover }}" alt="{{ .Title }}" />
+    {{ end }}
+  </figure>
+  {{ else if not site.Params.noDefaultSummaryCover }}
+  <figure class="mb-4">
+    {{ with resources.Get (printf "images/default%d.jpg" (index (seq 4 | shuffle) 0)) }}
+    {{ $resized := .Resize "800x q85" }}
+    {{ $webp := $resized.Resize (printf "%dx%d webp q85" $resized.Width $resized.Height) }}
+    <picture>
+      <source srcset="{{ $webp.RelPermalink }}" type="image/webp" />
+      <img src="{{ $resized.RelPermalink }}" alt="{{ .Title }}" />
+    </picture>
+    {{ end }}
+  </figure>
+  {{ end }}
+
+  <div class="pb-4">
+    <h2 class="text-2xl">{{ .Title }}</h2>
+
+    <p class="my-4 text-base-content/70 text-sm">
+      {{ if site.Params.Experimental.jsDate }}
+        <span data-format="luxon">{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}</span>
+      {{ else }}
+        {{ .Date | time.Format "Monday, Jan 2, 2006" }}
+      {{ end }}
+    </p>
+
+    <p class="my-4 text-base-content/70 text-sm">{{ .Summary }}</p>
+  </div>
+</a>

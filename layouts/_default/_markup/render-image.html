@@ -1,0 +1,43 @@
+{{- $src := .Destination -}}
+{{- $alt := .Text -}}
+{{- $title := .Title -}}
+
+{{- /* Try to get image as page resource */ -}}
+{{- $img := .Page.Resources.GetMatch $src -}}
+
+{{- if $img -}}
+  {{- /* Image is a page resource - optimize it */ -}}
+  {{- if eq $img.MediaType.SubType "svg" -}}
+    {{- /* SVGs don't need processing */ -}}
+    <img src="{{ $img.RelPermalink }}" alt="{{ $alt }}"{{ with $title }} title="{{ . }}"{{ end }} loading="lazy" />
+  {{- else -}}
+    {{- /* Create responsive sizes */ -}}
+    {{- $small := $img.Resize "640x q85" -}}
+    {{- $medium := $img.Resize "1024x q85" -}}
+    {{- $large := $img.Resize "1400x q85" -}}
+
+    {{- /* Create WebP versions */ -}}
+    {{- $smallWebp := $small.Resize (printf "%dx%d webp q85" $small.Width $small.Height) -}}
+    {{- $mediumWebp := $medium.Resize (printf "%dx%d webp q85" $medium.Width $medium.Height) -}}
+    {{- $largeWebp := $large.Resize (printf "%dx%d webp q85" $large.Width $large.Height) -}}
+
+    <picture>
+      {{- /* WebP sources with responsive sizes */ -}}
+      <source type="image/webp"
+              srcset="{{ $smallWebp.RelPermalink }} 640w,
+                      {{ $mediumWebp.RelPermalink }} 1024w,
+                      {{ $largeWebp.RelPermalink }} 1400w"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 85ch, 85ch" />
+      {{- /* Fallback JPG with responsive sizes */ -}}
+      <source type="{{ $img.MediaType }}"
+              srcset="{{ $small.RelPermalink }} 640w,
+                      {{ $medium.RelPermalink }} 1024w,
+                      {{ $large.RelPermalink }} 1400w"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 85ch, 85ch" />
+      <img src="{{ $medium.RelPermalink }}" alt="{{ $alt }}"{{ with $title }} title="{{ . }}"{{ end }} loading="lazy" />
+    </picture>
+  {{- end -}}
+{{- else -}}
+  {{- /* External image or not found - render as-is */ -}}
+  <img src="{{ $src }}" alt="{{ $alt }}"{{ with $title }} title="{{ . }}"{{ end }} loading="lazy" />
+{{- end -}}
