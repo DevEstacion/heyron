@@ -1,5 +1,5 @@
-tldr: "Quick 1-2 sentence summary of the entire post. Supports **Markdown** formatting."
-applyTo: '**.md'
+---
+applyTo: 'content/posts/**/*.md'
 ---
 
 # HeyRon Post Guidelines (Concise)

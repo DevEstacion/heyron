@@ -1,3 +1,7 @@
+---
+applyTo: '**'
+---
+
 # HeyRon AI Agent Notes (Condensed)
 - Project: Hugo + Dream v3 with Zen mode; deploy via GitHub Actions → gh-pages → Cloudflare. Dream is a submodule—never edit themes/dream; overrides live in layouts/.
 - Required config: baseURL=https://heyron.dev/, defaultContentLanguage='en', theme='dream', zenMode=true, lightTheme='emerald', darkTheme='forest', giscus=true; Hugo Extended only.
