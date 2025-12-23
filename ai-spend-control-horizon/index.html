@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Horizon: Regulating and Controlling AI Spend</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+      line-height: 1.7;
+      color: rgba(41, 41, 41, 1);
+    }
+
+    /* Medium-like styling */
+    .graf--h1 {
+      font-size: 2.5rem;
+      line-height: 1.2;
+      margin: 2rem 0 1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .graf--h2 {
+      font-size: 2rem;
+      line-height: 1.25;
+      margin: 1.8rem 0 0.8rem;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+    }
+
+    .graf--h3 {
+      font-size: 1.5rem;
+      line-height: 1.3;
+      margin: 1.5rem 0 0.6rem;
+      font-weight: 600;
+    }
+
+    .graf--h4 {
+      font-size: 1.25rem;
+      line-height: 1.4;
+      margin: 1.2rem 0 0.5rem;
+      font-weight: 600;
+    }
+
+    .graf--p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin: 1.5rem 0;
+      color: rgba(41, 41, 41, 1);
+    }
+
+    .graf--blockquote {
+      border-left: 4px solid rgba(0, 0, 0, 0.68);
+      padding-left: 1.5rem;
+      margin: 2rem 0;
+      color: rgba(41, 41, 41, 0.8);
+      font-style: italic;
+      font-size: 1.2rem;
+    }
+
+    .graf--pre {
+      background: #f8f8f8;
+      padding: 1.5rem;
+      border-radius: 4px;
+      overflow: auto;
+      margin: 1.5rem 0;
+      border: 1px solid #e6e6e6;
+    }
+
+    .markup--code {
+      background: rgba(0, 0, 0, 0.05);
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      font-family: Menlo, Monaco, "Courier New", monospace;
+      font-size: 0.9em;
+    }
+
+    .markup--pre-code {
+      background: transparent;
+      padding: 0;
+      font-family: Menlo, Monaco, "Courier New", monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .graf--image {
+      max-width: 100%;
+      height: auto;
+      margin: 2rem 0;
+      border-radius: 4px;
+      display: block;
+    }
+
+    .postList {
+      padding-left: 2rem;
+      margin: 1.5rem 0;
+    }
+
+    .graf--li {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin: 0.5rem 0;
+    }
+
+    .markup--strong {
+      font-weight: 700;
+    }
+
+    .markup--em {
+      font-style: italic;
+    }
+
+    .markup--anchor {
+      color: inherit;
+      text-decoration: underline;
+      text-decoration-color: rgba(0, 0, 0, 0.68);
+    }
+
+    .markup--anchor:hover {
+      text-decoration-color: rgba(0, 0, 0, 1);
+    }
+
+    /* Table styling */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 2rem 0;
+      font-size: 1rem;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f8f8f8;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    /* Code blocks */
+    pre code {
+      display: block;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="graf graf--h1">The Horizon: Regulating and Controlling AI Spend</h1>
+<p class="graf graf--p"><strong class="markup--strong markup--p-strong">TL;DR:</strong> - AI costs are climbing—inference and compliance will drive future spend</p>
+<ul class="postList graf graf--ul">
+<li class="graf graf--li">Regulatory pressure adds billions in overhead (AI Act, risk assessments, transparency)</li>
+<li class="graf graf--li">Technical wins: quantization, pruning, edge computing, efficient architectures</li>
+<li class="graf graf--li">Operational discipline: batching, caching, serverless, FinOps platforms</li>
+<li class="graf graf--li">Companies mastering all three survive; the rest get priced out</li>
+</ul>
+<p class="graf graf--p">The cost of AI is going up. Not just for training models—inference costs are climbing too. Right now, most companies are absorbing these costs or relying on engineers to optimize prompts and architectures. That's not sustainable.</p>
+<p class="graf graf--p">Looking ahead, controlling AI spend will require a mix of regulatory pressure, technological innovation, and operational discipline. Here's what I'm watching.</p>
+<h2 class="graf graf--h2">The Regulatory Gauntlet: Who Pays for "Safe AI"?</h2>
+<p class="graf graf--p">Governments are stepping in. The EU has the AI Act, various U.S. states are pushing their own rules, and more is coming. These regulations require risk assessments, transparency reports, and safeguards against discrimination.</p>
+<p class="graf graf--p">The cost? Estimates say compliance could add billions to AI development and operational budgets. It's a "safety tax" on AI companies, and someone has to pay for it.</p>
+<p class="graf graf--p">One interesting idea: use computational cost to determine regulatory scrutiny instead of revenue. Companies training massive models face stricter rules; smaller operations get lighter oversight. Makes sense—compute footprint correlates with potential impact.</p>
+<p class="graf graf--p"><img class="graf graf--image" src="images/image-1.jpg" alt="Regulatory burden visualization"></p>
+<h2 class="graf graf--h2">Tech to the Rescue: Smarter AI, Cheaper Inference</h2>
+<p class="graf graf--p">Technology will always be the biggest lever for cost reduction. Here's what's working now and what's coming.</p>
+<h3 class="graf graf--h3">Making Models Leaner and Meaner</h3>
+<p class="graf graf--p"><strong class="markup--strong markup--p-strong">Quantization</strong> reduces precision (32-bit to 8-bit) to shrink models. Smaller size, faster inference, lower memory use. Minimal accuracy loss if done right.</p>
+<p class="graf graf--p"><strong class="markup--strong markup--p-strong">Pruning</strong> removes less important connections in neural networks. You end up with a slimmer model that runs faster and costs less per inference.</p>
+<p class="graf graf--p"><strong class="markup--strong markup--p-strong">Knowledge Distillation</strong> trains a smaller "student" model to mimic a larger "teacher" model. The student performs comparably but runs on cheaper hardware.</p>
+<p class="graf graf--p"><strong class="markup--strong markup--p-strong">Efficient Architectures</strong> are models designed from the ground up to be lean. Smaller open-source models are proving you don't need a supercomputer for good performance.</p>
+<div class="diagram" data-panzoom="svg">
+  <img class="graf graf--image" src="images/ai-spend-control-horizon-diagram-1.svg" alt="Mermaid diagram 1" data-panzoom="svg">
+</div>
+
+<h3 class="graf graf--h3">Prompt Engineering Gets Even Smarter</h3>
+<p class="graf graf--p">Concise prompts save tokens. Fewer tokens mean lower costs. Future engineers will treat prompt optimization like query optimization in databases—every unnecessary word costs money.</p>
+<p class="graf graf--p"><img class="graf graf--image" src="images/image-2.jpg" alt="Prompt engineering optimization comparison"></p>
+<h3 class="graf graf--h3">Specialized Hardware and Edge Computing</h3>
+<p class="graf graf--p"><strong class="markup--strong markup--p-strong">Specialized Hardware</strong> like GPUs, TPUs, and edge AI chips are purpose-built for inference. They're more power-efficient than general-purpose CPUs and reduce inference time and cost.</p>
+<p class="graf graf--p"><strong class="markup--strong markup--p-strong">Edge Computing</strong> processes data locally—on your phone, in your car, at the sensor. Less reliance on centralized cloud infrastructure means lower costs and better privacy.</p>
+<p class="graf graf--p"><img class="graf graf--image" src="images/image-3.jpg" alt="Edge computing for AI"></p>
+<h2 class="graf graf--h2">Operational Savvy: Running AI Like a Well-Oiled (and Cheap) Machine</h2>
+<p class="graf graf--p">How you deploy and manage AI matters as much as the technology itself.</p>
+<h3 class="graf graf--h3">Batching and Scaling</h3>
+<p class="graf graf--p"><strong class="markup--strong markup--p-strong">Batching</strong> groups multiple inference requests together. Process them simultaneously to maximize hardware utilization and reduce cost per request.</p>
+<p class="graf graf--p"><strong class="markup--strong markup--p-strong">Dynamic Scaling</strong> adjusts resources based on demand. Orchestration tools spin up capacity when traffic spikes and shut it down during quiet periods. You only pay for what you use.</p>
+<div class="diagram" data-panzoom="svg">
+  <img class="graf graf--image" src="images/ai-spend-control-horizon-diagram-2.svg" alt="Mermaid diagram 2" data-panzoom="svg">
+</div>
+
+<h3 class="graf graf--h3">Serverless Inference</h3>
+<p class="graf graf--p">Cloud providers now offer serverless AI inference. You pay only for compute time when your model is actually running. Perfect for unpredictable workloads. No idle resource costs.</p>
+<p class="graf graf--p"><img class="graf graf--image" src="images/image-4.jpg" alt="Serverless AI inference visualization"></p>
+<h3 class="graf graf--h3">Caching and Tiering</h3>
+<p class="graf graf--p"><strong class="markup--strong markup--p-strong">Caching</strong> remembers answers to common questions. If someone asks again, serve the cached response instead of running inference. Huge cost savings for repetitive queries.</p>
+<p class="graf graf--p"><strong class="markup--strong markup--p-strong">Model Tiering</strong> routes queries to the right model. Simple questions go to cheap, fast models. Complex questions go to expensive, powerful models. Don't use a sledgehammer when a regular hammer works.</p>
+<div class="diagram" data-panzoom="svg">
+  <img class="graf graf--image" src="images/ai-spend-control-horizon-diagram-3.svg" alt="Mermaid diagram 3" data-panzoom="svg">
+</div>
+
+<h3 class="graf graf--h3">FinOps for AI</h3>
+<p class="graf graf--p">Financial Operations (FinOps) for AI means tracking and managing AI spend like you would cloud infrastructure. Use platforms to monitor costs across models and services. Set budgets. Enforce policies. Make AI spend visible and controllable.</p>
+<p class="graf graf--p"><img class="graf graf--image" src="images/image-5.jpg" alt="FinOps for AI dashboard"></p>
+<h2 class="graf graf--h2">The Path Forward</h2>
+<p class="graf graf--p">Controlling AI costs isn't one thing—it's everything. Regulatory compliance will add overhead. Technology will make inference cheaper. Operations will determine whether you're running efficiently or burning cash.</p>
+<p class="graf graf--p">The companies that figure this out will be the ones still deploying AI at scale in five years. The rest will be priced out or regulated into irrelevance.</p>
+<p class="graf graf--p">Worth paying attention to.</p>
+
+</body>
+</html>
