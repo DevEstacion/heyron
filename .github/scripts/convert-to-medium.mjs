@@ -47,16 +47,22 @@ async function renderMermaidToDataUri(code) {
   const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'mmdc-'));
   const inputPath = path.join(tmpDir, 'diagram.mmd');
   const outputPath = path.join(tmpDir, 'diagram.svg');
+  const configPath = path.join(tmpDir, 'puppeteer-config.json');
   const mmdcBin = getMmdcBinary();
 
+  // GitHub-hosted Linux runners need --no-sandbox flags for Chromium
+  const puppeteerConfig = { args: ['--no-sandbox', '--disable-setuid-sandbox'] };
+
   await fs.writeFile(inputPath, code, 'utf-8');
+  await fs.writeFile(configPath, JSON.stringify(puppeteerConfig), 'utf-8');
 
   try {
+    const args = ['-i', inputPath, '-o', outputPath, '-b', 'transparent', '-w', '900', '-p', configPath];
     if (process.platform === 'win32') {
-      const cmd = `"${mmdcBin}" -i "${inputPath}" -o "${outputPath}" -b transparent -w 900`;
+      const cmd = `"${mmdcBin}" ${args.map(a => (a.includes(' ') ? `"${a}"` : a)).join(' ')}`;
       await execFileAsync(cmd, { shell: true });
     } else {
-      await execFileAsync(mmdcBin, ['-i', inputPath, '-o', outputPath, '-b', 'transparent', '-w', '900']);
+      await execFileAsync(mmdcBin, args);
     }
     const svg = await fs.readFile(outputPath, 'utf-8');
     const base64 = Buffer.from(svg, 'utf-8').toString('base64');
