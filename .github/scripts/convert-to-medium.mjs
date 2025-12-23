@@ -9,88 +9,78 @@
 import { marked } from 'marked';
 import DOMPurify from 'isomorphic-dompurify';
 import fs from 'fs/promises';
+import fsSync from 'fs';
 import path from 'path';
-import os from 'os';
 import { fileURLToPath } from 'url';
 import { globby } from 'globby';
 import matter from 'gray-matter';
-import { promisify } from 'util';
-import { execFile } from 'child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const BASE_URL = "https://heyron.dev";
+const ALLOWED_URI_REGEX = /^(https?:|data:image\/[a-z0-9.+-]+;base64,)/i;
 
-const execFileAsync = promisify(execFile);
+const MIME_MAP = {
+  '.svg': 'image/svg+xml',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.png': 'image/png',
+  '.gif': 'image/gif'
+};
+
+function toDataUri(imagePath, sourcePath) {
+  const cleanedPath = imagePath.replace(/^\.\//, '');
+  const absolutePath = path.resolve(path.dirname(sourcePath), cleanedPath);
+  const ext = path.extname(absolutePath).toLowerCase();
+  const mime = MIME_MAP[ext];
+  if (!mime) return null;
+
+  try {
+    const bytes = fsSync.readFileSync(absolutePath);
+    return `data:${mime};base64,${bytes.toString('base64')}`;
+  } catch (error) {
+    console.warn(`⚠️ Could not embed image at ${absolutePath}: ${error.message}`);
+    return null;
+  }
+}
 
 // Convert relative image paths to absolute URLs
-function convertImagePaths(content, postSlug) {
+function convertImagePaths(content, postSlug, sourcePath) {
   const imagePattern = /!\[(.*?)\]\(((?!https?:\/\/)[^)]+)\)/g;
-  return content.replace(imagePattern, (match, altText, imagePath) => {
+  let updated = content.replace(imagePattern, (match, altText, imagePath) => {
     // Remove leading './' if present
     imagePath = imagePath.replace(/^\.\//, '');
+    const dataUri = toDataUri(imagePath, sourcePath);
+    if (dataUri) {
+      return `![${altText}](${dataUri})`;
+    }
     // Construct absolute URL
     const absoluteUrl = `${BASE_URL}/posts/${postSlug}/${imagePath}`;
     return `![${altText}](${absoluteUrl})`;
   });
+
+  const htmlImgPattern = /<img([^>]*?)src=["'](?!https?:\/\/)([^"'>]+)["']([^>]*?)>/gi;
+  updated = updated.replace(htmlImgPattern, (match, before, imagePath, after) => {
+    const cleanedPath = imagePath.replace(/^\.\//, '');
+    const dataUri = toDataUri(cleanedPath, sourcePath);
+    if (dataUri) {
+      return `<img${before}src="${dataUri}"${after}>`;
+    }
+    const absoluteUrl = `${BASE_URL}/posts/${postSlug}/${cleanedPath}`;
+    return `<img${before}src="${absoluteUrl}"${after}>`;
+  });
+
+  return updated;
 }
 
 function escapeHtml(str) {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function getMmdcBinary() {
-  const base = path.join(__dirname, 'node_modules', '.bin', 'mmdc');
-  return process.platform === 'win32' ? `${base}.cmd` : base;
-}
-
-async function renderMermaidToDataUri(code) {
-  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'mmdc-'));
-  const inputPath = path.join(tmpDir, 'diagram.mmd');
-  const outputPath = path.join(tmpDir, 'diagram.svg');
-  const configPath = path.join(tmpDir, 'puppeteer-config.json');
-  const mmdcBin = getMmdcBinary();
-
-  // GitHub-hosted Linux runners need --no-sandbox flags for Chromium
-  const puppeteerConfig = { args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-
-  await fs.writeFile(inputPath, code, 'utf-8');
-  await fs.writeFile(configPath, JSON.stringify(puppeteerConfig), 'utf-8');
-
-  try {
-    const args = ['-i', inputPath, '-o', outputPath, '-b', 'transparent', '-w', '900', '-p', configPath];
-    if (process.platform === 'win32') {
-      const cmd = `"${mmdcBin}" ${args.map(a => (a.includes(' ') ? `"${a}"` : a)).join(' ')}`;
-      await execFileAsync(cmd, { shell: true });
-    } else {
-      await execFileAsync(mmdcBin, args);
-    }
-    const svg = await fs.readFile(outputPath, 'utf-8');
-    const base64 = Buffer.from(svg, 'utf-8').toString('base64');
-    return `<img class="graf graf--image" alt="Mermaid diagram" src="data:image/svg+xml;base64,${base64}">`;
-  } catch (error) {
-    console.error('Mermaid render failed, keeping code block:', error.message);
-    return null;
-  } finally {
-    await fs.rm(tmpDir, { recursive: true, force: true });
+function assertNoMermaid(content, filePath) {
+  const regex = /```mermaid[\s\S]*?```/g;
+  if (regex.test(content)) {
+    throw new Error(`Mermaid code blocks found in ${filePath}. Pre-render them to SVG files in the page bundle (images/*.svg) and replace the fences with <img data-panzoom="svg"> tags.`);
   }
-}
-
-async function replaceMermaidBlocks(content) {
-  const regex = /```mermaid\s+([\s\S]*?)```/g;
-  let result = '';
-  let lastIndex = 0;
-  let match;
-
-  while ((match = regex.exec(content)) !== null) {
-    const [block, code] = match;
-    result += content.slice(lastIndex, match.index);
-    const rendered = await renderMermaidToDataUri(code.trim());
-    result += rendered || block;
-    lastIndex = regex.lastIndex;
-  }
-
-  result += content.slice(lastIndex);
-  return result;
 }
 
 // Extract post slug from file path
@@ -123,11 +113,11 @@ function addMediumClasses(html) {
     .replace(/<img/g, '<img class="graf graf--image"');
 }
 
-async function convertMarkdown(content) {
-  const withMermaid = await replaceMermaidBlocks(content);
-  const rawHtml = await marked.parse(withMermaid);
+async function convertMarkdown(content, sourcePath) {
+  assertNoMermaid(content, sourcePath);
+  const rawHtml = await marked.parse(content);
   const mediumHtml = addMediumClasses(rawHtml);
-  return DOMPurify.sanitize(mediumHtml, { ALLOWED_URI_REGEXP: /^data:image\/svg\+xml;base64,|^https?:/i });
+  return DOMPurify.sanitize(mediumHtml, { ALLOWED_URI_REGEXP: ALLOWED_URI_REGEX });
 }
 
 async function processFile(inputPath, outputDir) {
@@ -139,7 +129,7 @@ async function processFile(inputPath, outputDir) {
   const tldr = frontmatter.tldr;
 
   // Convert image paths to absolute URLs
-  const contentWithImages = convertImagePaths(content, postSlug);
+  const contentWithImages = convertImagePaths(content, postSlug, inputPath);
 
   const preface = [];
   if (title) preface.push(`# ${title}`);
@@ -147,7 +137,7 @@ async function processFile(inputPath, outputDir) {
 
   const mergedContent = [...preface, contentWithImages].join('\n\n');
 
-  const html = await convertMarkdown(mergedContent);
+  const html = await convertMarkdown(mergedContent, inputPath);
 
   // Create output filename (use post slug)
   const outputPath = path.join(outputDir, `${postSlug}.html`);
@@ -355,17 +345,24 @@ async function main() {
 
   // Process each file
   const processed = [];
+  let hadErrors = false;
+
   for (const file of markdownFiles) {
     try {
       await processFile(file, outputDir);
       processed.push(path.basename(file));
     } catch (error) {
+      hadErrors = true;
       console.error(`❌ Error processing ${path.basename(file)}:`, error.message);
     }
   }
 
   console.log(`\n✅ Converted ${processed.length} file(s)`);
   console.log(`📁 Output directory: ${path.resolve(outputDir)}`);
+
+  if (hadErrors) {
+    process.exitCode = 1;
+  }
 }
 
 main().catch(console.error);

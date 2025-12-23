@@ -41,22 +41,9 @@ Technology will always be the biggest lever for cost reduction. Here's what's wo
 
 **Efficient Architectures** are models designed from the ground up to be lean. Smaller open-source models are proving you don't need a supercomputer for good performance.
 
-```mermaid
-graph TD
-    A[Making AI Models Leaner & Cheaper] --> B{Key Optimization Techniques}
-    B --> B1[Quantization]
-    B1 --> B1a[Reduces data precision e.g. 32-bit to 8-bit]
-    B1a --> B1b[Result: Smaller Faster Less Memory-Hungry Models]
-    B --> B2[Pruning]
-    B2 --> B2a[Removes less important network connections/neurons]
-    B2a --> B2b[Result: Slimmer Model Less Compute Quicker Inference]
-    B --> B3[Knowledge Distillation]
-    B3 --> B3a[Smaller Student model learns from larger Teacher]
-    B3a --> B3b[Result: Efficient performance in a Cheaper package]
-    B --> B4[Efficient Architectures]
-    B4 --> B4a[Designs inherently optimized model structures]
-    B4a --> B4b[Result: Good performance without supercomputer demands]
-```
+<div class="diagram" data-panzoom="svg">
+  <img src="images/ai-spend-control-horizon-diagram-1.svg" alt="Mermaid diagram 1" loading="lazy" data-panzoom="svg">
+</div>
 
 ### Prompt Engineering Gets Even Smarter
 
@@ -82,29 +69,9 @@ How you deploy and manage AI matters as much as the technology itself.
 
 **Dynamic Scaling** adjusts resources based on demand. Orchestration tools spin up capacity when traffic spikes and shut it down during quiet periods. You only pay for what you use.
 
-```mermaid
-graph LR
-    subgraph Incoming AI Requests
-        R1[Request 1]
-        R2[Request 2]
-        R3[Request 3]
-        R4[Request 4]
-        R5[Request 5]
-    end
-
-    R1 --> B[Batching Queue]
-    R2 --> B
-    R3 --> B
-    R4 --> B
-    R5 --> B
-    B --> P{AI Processing Units}
-    P -- High Demand --> S_UP[Scale Up Resources]
-    P -- Low Demand --> S_DOWN[Scale Down Resources]
-    S_UP --> D[Dynamic Resource Allocation]
-    S_DOWN --> D
-    D --> O[Optimized Hardware Utilization]
-    O --> C[Reduced Cost Per Inference Request]
-```
+<div class="diagram" data-panzoom="svg">
+  <img src="images/ai-spend-control-horizon-diagram-2.svg" alt="Mermaid diagram 2" loading="lazy" data-panzoom="svg">
+</div>
 
 ### Serverless Inference
 
@@ -118,19 +85,9 @@ Cloud providers now offer serverless AI inference. You pay only for compute time
 
 **Model Tiering** routes queries to the right model. Simple questions go to cheap, fast models. Complex questions go to expensive, powerful models. Don't use a sledgehammer when a regular hammer works.
 
-```mermaid
-graph TD
-    A[Incoming AI Query] --> B{Is it a frequent query?}
-    B -- Yes --> C[Cache Lookup]
-    C -- Cache Hit --> D[Return Cached Answer Fast & Cheap]
-    B -- No --> E{Query Complexity?}
-    E -- Low/Medium --> F[Infer with Cheaper/Simpler Model Tier 1]
-    E -- High/Complex --> G[Infer with Powerful/Expensive Model Tier 2]
-    F --> H[Return Result]
-    G --> H
-    D --> I[Optimized AI Spend & Reduced Latency]
-    H --> I
-```
+<div class="diagram" data-panzoom="svg">
+  <img src="images/ai-spend-control-horizon-diagram-3.svg" alt="Mermaid diagram 3" loading="lazy" data-panzoom="svg">
+</div>
 
 ### FinOps for AI
 

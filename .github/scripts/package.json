@@ -4,7 +4,8 @@
   "type": "module",
   "description": "Scripts to convert Hugo posts to Medium-compatible HTML",
   "scripts": {
-    "export": "node convert-to-medium.mjs"
+    "export": "node convert-to-medium.mjs",
+    "render:mermaid": "node mermaid-to-svg.mjs --file"
   },
   "keywords": [
     "hugo",
@@ -15,7 +16,6 @@
   "author": "Ron",
   "license": "MIT",
   "dependencies": {
-    "@mermaid-js/mermaid-cli": "^10.9.1",
     "gray-matter": "^4.0.3",
     "globby": "^14.0.2",
     "isomorphic-dompurify": "^2.18.0",

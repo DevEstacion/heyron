@@ -78,3 +78,8 @@ theme = 'dream'
   [params.Advanced]
      customCSS = ['css/theme-colors.css', 'css/custom.css']
      customJS = ['js/mermaid-panzoom.js']
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true

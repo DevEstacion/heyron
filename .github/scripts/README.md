@@ -46,7 +46,7 @@ xdg-open ../medium-html/welcome.html # Linux
 
 - Parses frontmatter for `title`/`tldr`, prepends them to the markdown, and removes frontmatter from the body
 - Converts relative images to absolute URLs (`https://heyron.dev/posts/<slug>/...`)
-- Renders mermaid code fences to embedded SVG data-URI images
+- Expects Mermaid diagrams to be pre-rendered to SVG files in the post bundle (export fails if ```mermaid fences remain)
 - Uses `marked` to parse markdown and adds Medium-style classes
 - Sanitizes output and wraps in a styled HTML document
 - Output: `.github/medium-html/*.html`
@@ -95,6 +95,17 @@ Edit CSS in [convert-to-medium.mjs](convert-to-medium.mjs) (lines 60-155).
 ### Add Table-to-Image Conversion
 
 Requires Puppeteer (complex setup). See original [markdown2medium](https://github.com/DevEstacion/markdown2medium) for reference.
+
+### Mermaid diagrams → SVG
+
+Mermaid fences are not rendered during export. Convert them to SVGs inside the page bundle first:
+
+```bash
+cd .github/scripts
+npm run render:mermaid -- --file ../../content/posts/<slug>/index.md
+```
+
+This writes SVGs to `content/posts/<slug>/images/` and swaps the fences for `<img data-panzoom="svg">` tags.
 
 ## 📦 Dependencies
 

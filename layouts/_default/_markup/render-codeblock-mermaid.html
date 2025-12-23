@@ -1,0 +1,4 @@
+{{/* Mermaid runtime rendering is disabled. Convert this fence to an SVG and embed it as an <img data-panzoom="svg"> inside the page bundle. */}}
+{{ $code := .Inner | htmlEscape }}
+<pre class="mermaid-disabled"><code>{{ $code }}</code></pre>
+<p class="mermaid-disabled-note">Mermaid fences are not rendered at build time. Render this diagram to images/*.svg and replace the fence with an <code>&lt;img data-panzoom="svg"&gt;</code>.</p>

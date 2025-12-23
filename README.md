@@ -16,6 +16,7 @@ A Hugo-powered blog with automated deployment to GitHub Pages and Giscus comment
 
 - Hugo v0.153.0+ (extended version)
 - Git
+- Node.js 20+ (for diagram rendering and Medium export scripts)
 
 ### Setup
 
@@ -32,7 +33,7 @@ git submodule update --init --recursive
 
 3. Run the development server:
 ```bash
-hugo server -D
+hugo server -D --baseURL http://localhost:1313/heyron/ --appendPort=false
 ```
 
 4. Visit `http://localhost:1313/heyron/` in your browser
@@ -42,6 +43,23 @@ hugo server -D
 ```bash
 hugo new content posts/my-post.md
 ```
+
+### Diagrams (Mermaid → static SVG)
+
+- Do not commit Mermaid code fences. Pre-render them to SVGs in the page bundle and use HTML wrappers.
+- Render a specific post’s diagrams from repo root:
+   ```bash
+   cd .github/scripts
+   npm install
+   npm run render:mermaid -- --file ../../content/posts/<slug>/index.md
+   ```
+- Replace fences with:
+   ```html
+   <div class="diagram" data-panzoom="svg">
+      <img src="images/<file>.svg" alt="..." loading="lazy" data-panzoom="svg">
+   </div>
+   ```
+- SVG pan/zoom works automatically via `static/js/mermaid-panzoom.js`.
 
 ## Deployment
 
@@ -78,6 +96,13 @@ Main configuration is in [`hugo.toml`](hugo.toml). Key settings:
 2. Commit and push to `main` branch
 3. GitHub Actions builds and deploys automatically
 4. Site updates at `https://devestacion.github.io/heyron/`
+
+### Medium export
+
+- Local: `./scripts/export-to-medium.sh` (installs deps once, runs `npm run export`).
+- Direct: `cd .github/scripts && npm install && npm run export`.
+- Output: `.github/medium-html/*.html` with images (including SVG diagrams) embedded as data URIs; copy-paste into Medium.
+- CI: `.github/workflows/export-to-medium.yml` runs on content changes and pushes HTML to the `html` branch for download.
 
 ## Tech Stack
 
