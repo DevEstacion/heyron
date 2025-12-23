@@ -7,7 +7,6 @@ This directory contains scripts to automatically export Hugo blog posts to Mediu
 ```
 .github/
 ├── scripts/
-│   ├── strip-frontmatter.py    # Removes Hugo frontmatter
 │   ├── convert-to-medium.mjs   # Converts markdown to Medium HTML
 │   ├── package.json            # Node.js dependencies
 │   └── README.md               # This file
@@ -25,41 +24,31 @@ This directory contains scripts to automatically export Hugo blog posts to Mediu
 2. Select **"Export Posts to Medium"** workflow
 3. Click **"Run workflow"**
 4. Wait for completion (~30 seconds)
-5. Download the `medium-exports-{run-number}` artifact
-6. Open HTML file in browser → Select all (Ctrl/Cmd+A) → Copy (Ctrl/Cmd+C)
-7. Paste into Medium's editor
+5. Open HTML file in browser → Select all (Ctrl/Cmd+A) → Copy (Ctrl/Cmd+C)
+6. Paste into Medium's editor
 
 ### Option 2: Local Testing
 
 ```bash
 # From repository root
-./scripts/export-to-medium.sh
+cd .github/scripts && npm install
+npm run export
 
 # View output
-open .github/medium-html/welcome.html  # macOS
-start .github/medium-html/welcome.html # Windows
-xdg-open .github/medium-html/welcome.html # Linux
+open ../medium-html/welcome.html  # macOS
+start ..\medium-html\welcome.html # Windows
+xdg-open ../medium-html/welcome.html # Linux
 ```
 
 ## 🔧 How It Works
 
-### Step 1: Strip Frontmatter (`strip-frontmatter.py`)
+### Conversion (`convert-to-medium.mjs`)
 
-- Removes Hugo YAML frontmatter (`---...---`)
-- Converts relative image paths to absolute URLs:
-  - `![alt](image.jpg)` → `![alt](https://heyron.dev/posts/welcome/image.jpg)`
-- Handles page bundles (`welcome/index.md` → `welcome.md`)
-- Output: `.github/medium-exports/*.md`
-
-### Step 2: Convert to Medium HTML (`convert-to-medium.mjs`)
-
-- Uses `marked` library to parse markdown
-- Adds Medium-specific CSS classes:
-  - `<h1 class="graf graf--h1">`
-  - `<p class="graf graf--p">`
-  - `<blockquote class="graf graf--blockquote">`
-  - etc.
-- Wraps in styled HTML document
+- Parses frontmatter for `title`/`tldr`, prepends them to the markdown, and removes frontmatter from the body
+- Converts relative images to absolute URLs (`https://heyron.dev/posts/<slug>/...`)
+- Renders mermaid code fences to embedded SVG data-URI images
+- Uses `marked` to parse markdown and adds Medium-style classes
+- Sanitizes output and wraps in a styled HTML document
 - Output: `.github/medium-html/*.html`
 
 ## 📝 Supported Markdown Features

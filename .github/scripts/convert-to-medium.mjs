@@ -10,17 +10,17 @@ import { marked } from 'marked';
 import DOMPurify from 'isomorphic-dompurify';
 import fs from 'fs/promises';
 import path from 'path';
+import os from 'os';
 import { fileURLToPath } from 'url';
 import { globby } from 'globby';
+import matter from 'gray-matter';
+import { promisify } from 'util';
+import { execFile } from 'child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const BASE_URL = "https://heyron.dev";
 
-// Strip Hugo frontmatter (--- ... ---)
-function stripFrontmatter(content) {
-  const frontmatterPattern = /^---\s*\n.*?\n---\s*\n/s;
-  return content.replace(frontmatterPattern, '').trim();
-}
+const execFileAsync = promisify(execFile);
 
 // Convert relative image paths to absolute URLs
 function convertImagePaths(content, postSlug) {
@@ -32,6 +32,59 @@ function convertImagePaths(content, postSlug) {
     const absoluteUrl = `${BASE_URL}/posts/${postSlug}/${imagePath}`;
     return `![${altText}](${absoluteUrl})`;
   });
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function getMmdcBinary() {
+  const base = path.join(__dirname, 'node_modules', '.bin', 'mmdc');
+  return process.platform === 'win32' ? `${base}.cmd` : base;
+}
+
+async function renderMermaidToDataUri(code) {
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'mmdc-'));
+  const inputPath = path.join(tmpDir, 'diagram.mmd');
+  const outputPath = path.join(tmpDir, 'diagram.svg');
+  const mmdcBin = getMmdcBinary();
+
+  await fs.writeFile(inputPath, code, 'utf-8');
+
+  try {
+    if (process.platform === 'win32') {
+      const cmd = `"${mmdcBin}" -i "${inputPath}" -o "${outputPath}" -b transparent -w 900`;
+      await execFileAsync(cmd, { shell: true });
+    } else {
+      await execFileAsync(mmdcBin, ['-i', inputPath, '-o', outputPath, '-b', 'transparent', '-w', '900']);
+    }
+    const svg = await fs.readFile(outputPath, 'utf-8');
+    const base64 = Buffer.from(svg, 'utf-8').toString('base64');
+    return `<img class="graf graf--image" alt="Mermaid diagram" src="data:image/svg+xml;base64,${base64}">`;
+  } catch (error) {
+    console.error('Mermaid render failed, keeping code block:', error.message);
+    return null;
+  } finally {
+    await fs.rm(tmpDir, { recursive: true, force: true });
+  }
+}
+
+async function replaceMermaidBlocks(content) {
+  const regex = /```mermaid\s+([\s\S]*?)```/g;
+  let result = '';
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(content)) !== null) {
+    const [block, code] = match;
+    result += content.slice(lastIndex, match.index);
+    const rendered = await renderMermaidToDataUri(code.trim());
+    result += rendered || block;
+    lastIndex = regex.lastIndex;
+  }
+
+  result += content.slice(lastIndex);
+  return result;
 }
 
 // Extract post slug from file path
@@ -64,28 +117,31 @@ function addMediumClasses(html) {
     .replace(/<img/g, '<img class="graf graf--image"');
 }
 
-async function convertMarkdown(content, filename) {
-  // Parse markdown to HTML
-  const rawHtml = await marked.parse(content);
-
-  // Add Medium-specific classes
+async function convertMarkdown(content) {
+  const withMermaid = await replaceMermaidBlocks(content);
+  const rawHtml = await marked.parse(withMermaid);
   const mediumHtml = addMediumClasses(rawHtml);
-
-  // Sanitize HTML
-  return DOMPurify.sanitize(mediumHtml);
+  return DOMPurify.sanitize(mediumHtml, { ALLOWED_URI_REGEXP: /^data:image\/svg\+xml;base64,|^https?:/i });
 }
 
 async function processFile(inputPath, outputDir) {
-  let content = await fs.readFile(inputPath, 'utf-8');
+  let rawContent = await fs.readFile(inputPath, 'utf-8');
   const postSlug = getPostSlug(inputPath);
 
-  // Strip frontmatter
-  content = stripFrontmatter(content);
+  const { data: frontmatter, content } = matter(rawContent);
+  const title = frontmatter.title || postSlug;
+  const tldr = frontmatter.tldr;
 
   // Convert image paths to absolute URLs
-  content = convertImagePaths(content, postSlug);
+  const contentWithImages = convertImagePaths(content, postSlug);
 
-  const html = await convertMarkdown(content, postSlug);
+  const preface = [];
+  if (title) preface.push(`# ${title}`);
+  if (tldr) preface.push(`**TL;DR:** ${tldr}`);
+
+  const mergedContent = [...preface, contentWithImages].join('\n\n');
+
+  const html = await convertMarkdown(mergedContent);
 
   // Create output filename (use post slug)
   const outputPath = path.join(outputDir, `${postSlug}.html`);
@@ -96,7 +152,7 @@ async function processFile(inputPath, outputDir) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${postSlug}</title>
+  <title>${escapeHtml(title)}</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
