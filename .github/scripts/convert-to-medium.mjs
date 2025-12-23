@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 /**
- * Convert Hugo posts to Medium-compatible HTML
+ * Convert Hugo posts to Medium-compatible HTML with folder structure
  * 1. Strips Hugo frontmatter
- * 2. Converts relative image paths to absolute URLs
- * 3. Converts markdown to HTML with Medium CSS classes
+ * 2. Copies image files to images/ subfolder
+ * 3. Updates image references to relative paths
+ * 4. Converts markdown to HTML with Medium CSS classes
+ * 5. Creates post-name/index.html structure
  */
 
 import { marked } from 'marked';
@@ -17,56 +19,48 @@ import matter from 'gray-matter';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const BASE_URL = "https://heyron.dev";
-const ALLOWED_URI_REGEX = /^(https?:|data:image\/[a-z0-9.+-]+;base64,)/i;
+const ALLOWED_URI_REGEX = /^(https?:|images\/)/i;
 
-const MIME_MAP = {
-  '.svg': 'image/svg+xml',
-  '.jpg': 'image/jpeg',
-  '.jpeg': 'image/jpeg',
-  '.png': 'image/png',
-  '.gif': 'image/gif'
-};
+// Track images that need to be copied
+const imagesToCopy = [];
 
-function toDataUri(imagePath, sourcePath) {
-  const cleanedPath = imagePath.replace(/^\.\//, '');
-  const absolutePath = path.resolve(path.dirname(sourcePath), cleanedPath);
-  const ext = path.extname(absolutePath).toLowerCase();
-  const mime = MIME_MAP[ext];
-  if (!mime) return null;
-
-  try {
-    const bytes = fsSync.readFileSync(absolutePath);
-    return `data:${mime};base64,${bytes.toString('base64')}`;
-  } catch (error) {
-    console.warn(`⚠️ Could not embed image at ${absolutePath}: ${error.message}`);
-    return null;
-  }
-}
-
-// Convert relative image paths to absolute URLs
+// Convert image paths to relative paths and track for copying
 function convertImagePaths(content, postSlug, sourcePath) {
+  imagesToCopy.length = 0; // Reset for each post
+
   const imagePattern = /!\[(.*?)\]\(((?!https?:\/\/)[^)]+)\)/g;
   let updated = content.replace(imagePattern, (match, altText, imagePath) => {
     // Remove leading './' if present
     imagePath = imagePath.replace(/^\.\//, '');
-    const dataUri = toDataUri(imagePath, sourcePath);
-    if (dataUri) {
-      return `![${altText}](${dataUri})`;
-    }
-    // Construct absolute URL
-    const absoluteUrl = `${BASE_URL}/posts/${postSlug}/${imagePath}`;
-    return `![${altText}](${absoluteUrl})`;
+
+    // Track source path for copying
+    const sourceImagePath = path.resolve(path.dirname(sourcePath), imagePath);
+    const imageFilename = path.basename(imagePath);
+
+    imagesToCopy.push({
+      source: sourceImagePath,
+      filename: imageFilename
+    });
+
+    // Use relative path in HTML
+    return `![${altText}](images/${imageFilename})`;
   });
 
   const htmlImgPattern = /<img([^>]*?)src=["'](?!https?:\/\/)([^"'>]+)["']([^>]*?)>/gi;
   updated = updated.replace(htmlImgPattern, (match, before, imagePath, after) => {
     const cleanedPath = imagePath.replace(/^\.\//, '');
-    const dataUri = toDataUri(cleanedPath, sourcePath);
-    if (dataUri) {
-      return `<img${before}src="${dataUri}"${after}>`;
-    }
-    const absoluteUrl = `${BASE_URL}/posts/${postSlug}/${cleanedPath}`;
-    return `<img${before}src="${absoluteUrl}"${after}>`;
+
+    // Track source path for copying
+    const sourceImagePath = path.resolve(path.dirname(sourcePath), cleanedPath);
+    const imageFilename = path.basename(cleanedPath);
+
+    imagesToCopy.push({
+      source: sourceImagePath,
+      filename: imageFilename
+    });
+
+    // Use relative path in HTML
+    return `<img${before}src="images/${imageFilename}"${after}>`;
   });
 
   return updated;
@@ -93,7 +87,7 @@ function getPostSlug(filePath) {
   return parsedPath.name;
 }
 
-// Medium CSS classes mapping (from MarkdownToMediumConverter.tsx:344-356)
+// Medium CSS classes mapping
 function addMediumClasses(html) {
   return html
     .replace(/<h1/g, '<h1 class="graf graf--h1"')
@@ -128,7 +122,7 @@ async function processFile(inputPath, outputDir) {
   const title = frontmatter.title || postSlug;
   const tldr = frontmatter.tldr;
 
-  // Convert image paths to absolute URLs
+  // Convert image paths to relative paths and track for copying
   const contentWithImages = convertImagePaths(content, postSlug, inputPath);
 
   const preface = [];
@@ -139,8 +133,26 @@ async function processFile(inputPath, outputDir) {
 
   const html = await convertMarkdown(mergedContent, inputPath);
 
-  // Create output filename (use post slug)
-  const outputPath = path.join(outputDir, `${postSlug}.html`);
+  // Create post-specific folder structure
+  const postDir = path.join(outputDir, postSlug);
+  const imagesDir = path.join(postDir, 'images');
+
+  await fs.mkdir(postDir, { recursive: true });
+  await fs.mkdir(imagesDir, { recursive: true });
+
+  // Copy image files to images/ subfolder
+  for (const img of imagesToCopy) {
+    try {
+      const destPath = path.join(imagesDir, img.filename);
+      await fs.copyFile(img.source, destPath);
+      console.log(`  ├─ Copied image: ${img.filename}`);
+    } catch (error) {
+      console.warn(`  ⚠️  Could not copy image ${img.filename}: ${error.message}`);
+    }
+  }
+
+  // Create output path as index.html in post folder
+  const outputPath = path.join(postDir, 'index.html');
 
   // Wrap in Medium-style document
   const fullHtml = `<!DOCTYPE html>
@@ -304,7 +316,7 @@ async function processFile(inputPath, outputDir) {
 </html>`;
 
   await fs.writeFile(outputPath, fullHtml);
-  console.log(`✓ Converted: ${path.basename(inputPath)} → ${path.basename(outputPath)}`);
+  console.log(`✓ Converted: ${path.basename(inputPath)} → ${postSlug}/index.html (${imagesToCopy.length} images)`);
   return outputPath;
 }
 
@@ -312,7 +324,12 @@ async function main() {
   const contentDir = path.join(__dirname, '../../content/posts');
   const outputDir = path.join(__dirname, '../medium-html');
 
-  // Create output directory
+  // Clean and recreate output directory
+  try {
+    await fs.rm(outputDir, { recursive: true, force: true });
+  } catch (error) {
+    // Ignore if directory doesn't exist
+  }
   await fs.mkdir(outputDir, { recursive: true });
 
   // Check if specific files were passed via command line

@@ -124,9 +124,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Save HTML files to temp location
+          # Save HTML folders to temp location
           mkdir -p /tmp/medium-export
-          cp .github/medium-html/*.html /tmp/medium-export/ 2>/dev/null || true
+          if [ -d ".github/medium-html" ]; then
+            cp -r .github/medium-html/* /tmp/medium-export/ 2>/dev/null || true
+          fi
 
           # Create or checkout html branch (orphan - no history)
           git checkout --orphan html 2>/dev/null || git checkout html
@@ -142,8 +144,10 @@ jobs:
           .DS_Store
           EOF
 
-          # Copy HTML files from temp location
-          cp /tmp/medium-export/*.html . 2>/dev/null || true
+          # Copy HTML folders from temp location
+          if [ -d "/tmp/medium-export" ]; then
+            cp -r /tmp/medium-export/* . 2>/dev/null || true
+          fi
 
           # Create README for the branch
           cat > README.md << 'EOF'
@@ -151,12 +155,31 @@ jobs:
 
           This branch contains Medium-ready HTML exports of blog posts.
 
+          ## Structure
+
+          Each post has its own folder:
+          ```
+          post-name/
+          ├── index.html      # Medium-ready HTML
+          └── images/         # Image files (PNG, JPEG, SVG)
+              ├── diagram-1.svg
+              └── cover.jpg
+          ```
+
           ## Usage
 
-          1. Browse HTML files in this branch
-          2. Open any file (GitHub will render it)
-          3. Right-click → "Save page as" to download
-          4. Open in browser → Copy all (Ctrl/Cmd+A) → Paste into Medium
+          ### Method 1: Browser Copy-Paste
+          1. Browse to a post folder (e.g., `ai-spend-control-horizon/`)
+          2. Click on `index.html` → Click "Raw" or "Download"
+          3. Open downloaded file in browser
+          4. Select all (Ctrl/Cmd+A) → Copy (Ctrl/Cmd+C)
+          5. Paste into Medium's editor
+
+          ### Method 2: Direct Image Upload
+          1. Download the post folder
+          2. Open `index.html` in a browser to preview
+          3. Manually upload images from `images/` folder to Medium
+          4. Update image URLs in Medium editor
 
           ## Files
 
@@ -169,7 +192,7 @@ jobs:
 
           # Add all files (gitignore will exclude .github and node_modules)
           git add -A
-          git commit -m "Export posts to Medium HTML (run #${{ github.run_number }})" || echo "No changes to commit"
+          git commit -m "Export posts to Medium HTML with images (run #${{ github.run_number }})" || echo "No changes to commit"
           git push origin html --force
 
       - name: Display summary
@@ -177,25 +200,33 @@ jobs:
         run: |
           echo "## Medium Export Complete ✅" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Exported files:**" >> $GITHUB_STEP_SUMMARY
+          echo "**Exported posts:**" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # List HTML files from html branch (we're still on html branch here)
-          if ls *.html 1> /dev/null 2>&1; then
-            ls -lh *.html | awk '{print "- `" $9 "` (" $5 ")"}'>> $GITHUB_STEP_SUMMARY
+          # List post folders from html branch (we're still on html branch here)
+          if ls -d */ 2>/dev/null | grep -v "^\."; then
+            for dir in */; do
+              if [ -f "${dir}index.html" ]; then
+                post_name="${dir%/}"
+                image_count=$(find "${dir}images" -type f 2>/dev/null | wc -l || echo "0")
+                html_size=$(du -h "${dir}index.html" | cut -f1)
+                echo "- **${post_name}/** → \`index.html\` (${html_size}), ${image_count} image(s)" >> $GITHUB_STEP_SUMMARY
+              fi
+            done
           else
-            echo "- No HTML files found" >> $GITHUB_STEP_SUMMARY
+            echo "- No posts found" >> $GITHUB_STEP_SUMMARY
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📂 Access HTML Files" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "View files: [html branch](https://github.com/${{ github.repository }}/tree/html)" >> $GITHUB_STEP_SUMMARY
+          echo "View posts: [html branch](https://github.com/${{ github.repository }}/tree/html)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
           echo "1. Go to [html branch](https://github.com/${{ github.repository }}/tree/html)" >> $GITHUB_STEP_SUMMARY
-          echo "2. Click on any HTML file to view" >> $GITHUB_STEP_SUMMARY
-          echo "3. Click 'Raw' or 'Download' button" >> $GITHUB_STEP_SUMMARY
+          echo "2. Navigate to post folder (e.g., \`ai-spend-control-horizon/\`)" >> $GITHUB_STEP_SUMMARY
+          echo "3. Click \`index.html\` → 'Raw' or 'Download'" >> $GITHUB_STEP_SUMMARY
           echo "4. Open downloaded file in browser" >> $GITHUB_STEP_SUMMARY
           echo "5. Select all (Ctrl/Cmd+A) → Copy (Ctrl/Cmd+C)" >> $GITHUB_STEP_SUMMARY
           echo "6. Paste into Medium's editor" >> $GITHUB_STEP_SUMMARY
+          echo "7. Images will display with relative paths" >> $GITHUB_STEP_SUMMARY
