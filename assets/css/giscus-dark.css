@@ -98,3 +98,18 @@
   /* Ensure form controls render in dark mode context */
   color-scheme: dark;
 }
+
+/* giscus widget overrides: force canvas/fg/border colors */
+html, body, .App, .app,
+.Widget, .widget,
+.CommentList, .comment-list,
+.Comment, .comment,
+.Discussion, .discussion,
+.Editor, .editor,
+.CommentForm, .comment-form,
+.reactions, .reaction-list {
+  background-color: var(--color-canvas-default) !important;
+  color: var(--color-fg-default) !important;
+  border-color: var(--color-border-default) !important;
+  border: 1px solid var(--color-border-default) !important;
+}
