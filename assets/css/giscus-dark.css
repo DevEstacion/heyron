@@ -100,7 +100,7 @@
 }
 
 /* giscus widget overrides: force canvas/fg/border colors */
-body, .App, .app,
+.App, .app,
 .Widget, .widget,
 .CommentList, .comment-list,
 .Comment, .comment,
@@ -114,7 +114,7 @@ body, .App, .app,
   border: 1px solid var(--color-border-muted) !important;
 }
 
-html {
+html, body {
   background-color: var(--color-base-100) !important;
   color: var(--color-fg-default) !important;
   border: 0px solid var(--color-border-muted) !important;
