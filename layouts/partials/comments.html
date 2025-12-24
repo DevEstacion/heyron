@@ -10,10 +10,10 @@
     const getThemeURL = (isDark) => isDark ? DARK_THEME : LIGHT_THEME;
 
     const isDarkMode = () => {
-      const stored = localStorage.getItem('darkMode');
-      return stored !== null
-        ? stored === 'true'
-        : window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+      const stored = localStorage.getItem('hugo-theme-dream-is-dark');
+      if (stored === 'y') return true;
+      if (stored === 'n') return false;
+      return window.matchMedia?.('(prefers-color-scheme: dark)').matches;
     };
 
     // Create and inject Giscus script with correct initial theme
