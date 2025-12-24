@@ -31,6 +31,30 @@
   --color-prettylights-syntax-sublimelinter-gutter-mark: #9ca3af;
   --color-prettylights-syntax-constant-other-reference-link: #065f46;
 
+  /* Base palette tokens required by giscus iframe (self-contained) */
+  --color-base-100: #f5f1ed;
+  --color-base-100: oklch(98% 0.008 60); /* parchment-100 */
+  --color-base-200: #dad2bc;
+  --color-base-200: oklch(90% 0.010 80); /* bone-200 */
+  --color-base-300: #a99985;
+  --color-base-300: oklch(76% 0.026 70); /* khaki-beige-300 */
+  --color-base-content: #292929;
+  --color-base-content: oklch(16% 0.014 0); /* shadow-grey-800 */
+  --color-primary: #5c6a7a;
+  --color-primary: oklch(48% 0.038 250); /* slate-grey-600 */
+  --color-primary-content: #f5f1ed;
+  --color-primary-content: oklch(98% 0.008 60); /* parchment-100 */
+  --shadow-grey-600: #474747;
+  --shadow-grey-600: oklch(28% 0.012 0);
+  --shadow-grey-400: #858585;
+  --shadow-grey-400: oklch(52% 0.008 0);
+  --bone-200: #dad2bc;
+  --bone-200: oklch(90% 0.010 80);
+  --parchment-200: #efe9e1;
+  --parchment-200: oklch(94% 0.012 60);
+  --slate-grey-700: #495561;
+  --slate-grey-700: oklch(38% 0.035 250);
+
   /* Main colors - Concrete values for cross-origin iframe compatibility */
   --color-canvas-default: #f5f1ed; /* fallback */
   --color-canvas-default: oklch(98% 0.008 60); /* parchment-100 */
@@ -70,4 +94,7 @@
   --color-btn-primary-hover-bg: oklch(38% 0.035 250); /* slate-grey-700 */
   --color-btn-primary-hover-border: #495561; /* fallback */
   --color-btn-primary-hover-border: oklch(38% 0.035 250); /* slate-grey-700 */
+
+  /* Ensure form controls render in light mode context */
+  color-scheme: light;
 }
