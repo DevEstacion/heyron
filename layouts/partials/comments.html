@@ -1,28 +1,51 @@
 <div id="giscus-comments"></div>
-<script src="https://giscus.app/client.js"
-        data-repo="DevEstacion/heyron"
-        data-repo-id="R_kgDOQsC06g"
-        data-category="Comments"
-        data-category-id="DIC_kwDOQsC06s4C0DSl"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="top"
-        data-theme="{{ .Site.BaseURL }}css/giscus-light.css?v=1"
-        data-lang="en"
-        data-loading="lazy"
-        crossorigin="anonymous"
-        async>
+<script>
+  // Detect initial theme before Giscus loads
+  (function() {
+    const isDarkMode = () => {
+      // Check for Dream theme's dark mode state
+      const stored = localStorage.getItem('darkMode');
+      if (stored !== null) {
+        return stored === 'true';
+      }
+      // Fallback to system preference
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    };
+
+    const baseURL = '{{ .Site.BaseURL }}';
+    const initialTheme = isDarkMode()
+      ? `${baseURL}css/giscus-dark.css?v=1`
+      : `${baseURL}css/giscus-light.css?v=1`;
+
+    // Create and inject Giscus script with correct initial theme
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.setAttribute('data-repo', 'DevEstacion/heyron');
+    script.setAttribute('data-repo-id', 'R_kgDOQsC06g');
+    script.setAttribute('data-category', 'Comments');
+    script.setAttribute('data-category-id', 'DIC_kwDOQsC06s4C0DSl');
+    script.setAttribute('data-mapping', 'pathname');
+    script.setAttribute('data-strict', '0');
+    script.setAttribute('data-reactions-enabled', '1');
+    script.setAttribute('data-emit-metadata', '0');
+    script.setAttribute('data-input-position', 'top');
+    script.setAttribute('data-theme', initialTheme);
+    script.setAttribute('data-lang', 'en');
+    script.setAttribute('data-loading', 'lazy');
+    script.setAttribute('crossorigin', 'anonymous');
+    script.async = true;
+
+    document.getElementById('giscus-comments').appendChild(script);
+  })();
 </script>
 <script>
-  // Dynamically switch Giscus theme based on Dream theme's dark mode
+  // Dynamically switch Giscus theme when Dream theme changes
   document.addEventListener('alpine:initialized', () => {
     Alpine.effect(() => {
       const isDark = Alpine.store('darkMode').isDark();
       const theme = isDark
-      ? '{{ .Site.BaseURL }}css/giscus-dark.css?v=1'
-      : '{{ .Site.BaseURL }}css/giscus-light.css?v=1';
+      ? '{{ .Site.BaseURL }}css/giscus-dark.css?v=2'
+      : '{{ .Site.BaseURL }}css/giscus-light.css?v=2';
 
       // Wait for iframe with retry logic (max 5 seconds)
       let attempts = 0;
