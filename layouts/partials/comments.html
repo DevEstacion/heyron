@@ -1,11 +1,13 @@
 <div id="giscus-comments"></div>
 <script>
   (function() {
-    const BASE_URL = '{{ .Site.BaseURL }}';
-    const THEME_VERSION = 'v=2';
+    {{ $lightCSS := resources.Get "css/giscus-light.css" | minify | fingerprint }}
+    {{ $darkCSS := resources.Get "css/giscus-dark.css" | minify | fingerprint }}
 
-    const getThemeURL = (isDark) =>
-      `${BASE_URL}css/giscus-${isDark ? 'dark' : 'light'}.css?${THEME_VERSION}`;
+    const LIGHT_THEME = '{{ $lightCSS.RelPermalink }}';
+    const DARK_THEME = '{{ $darkCSS.RelPermalink }}';
+
+    const getThemeURL = (isDark) => isDark ? DARK_THEME : LIGHT_THEME;
 
     const isDarkMode = () => {
       const stored = localStorage.getItem('darkMode');

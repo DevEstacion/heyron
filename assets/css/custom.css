@@ -163,7 +163,6 @@ article.prose img {
    LIGHT MODE - Emerald Theme Override
    ============================================ */
 
-:root:has(input.theme-controller[value=emerald]:checked),
 [data-theme=emerald] {
   /* Base colors - Warm light backgrounds with dark text */
   --color-base-100: var(--parchment-100);           /* Main background - cream white */
@@ -202,7 +201,6 @@ article.prose img {
    DARK MODE - Forest Theme Override
    ============================================ */
 
-:root:has(input.theme-controller[value=forest]:checked),
 [data-theme=forest] {
   /* Base colors - Dark backgrounds with light text */
   --color-base-100: var(--shadow-grey-900);         /* Main background - nearly black */

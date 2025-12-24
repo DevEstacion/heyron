@@ -40,6 +40,9 @@ theme = 'dream'
   lightTheme = "emerald"
   darkTheme = "forest"
 
+  # Enable custom syntax highlighting to prevent JS errors
+  customSyntaxHighlighting = true
+
   author = 'ron'
   description = 'A mind dump'
   avatar = 'img/avatar.jpg'

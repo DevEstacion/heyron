@@ -154,8 +154,12 @@
 {{ end }}
 
 {{ if site.Params.customSyntaxHighlighting }}
-  {{- $syntaxLightCSS := resources.Get "css/syntax-light.css" | minify -}}
-  {{- $syntaxDarkCSS := resources.Get "css/syntax-dark.css" | minify -}}
+  {{- $syntaxLightCSS := resources.Get "css/syntax-light.css" -}}
+  {{- $syntaxDarkCSS := resources.Get "css/syntax-dark.css" -}}
+
+  {{ if and $syntaxLightCSS $syntaxDarkCSS }}
+    {{- $syntaxLightCSS = $syntaxLightCSS | minify -}}
+    {{- $syntaxDarkCSS = $syntaxDarkCSS | minify -}}
 
   <script>
     window.customSyntaxHighlighting = {
@@ -172,6 +176,12 @@
         .setAttribute('href', customSyntaxHighlightingUrl)
     })
   </script>
+  {{ else }}
+  <script>
+    // Provide empty object to prevent JS errors
+    window.customSyntaxHighlighting = { light: '', dark: '' };
+  </script>
+  {{ end }}
 {{ end }}
 
 {{ $tocJs := resources.Get "js/toc.js" }}
