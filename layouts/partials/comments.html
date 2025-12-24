@@ -4,8 +4,8 @@
     {{ $lightCSS := resources.Get "css/giscus-light.css" | minify | fingerprint }}
     {{ $darkCSS := resources.Get "css/giscus-dark.css" | minify | fingerprint }}
 
-    const LIGHT_THEME = '{{ $lightCSS.RelPermalink }}';
-    const DARK_THEME = '{{ $darkCSS.RelPermalink }}';
+    const LIGHT_THEME = '{{ $lightCSS.Permalink }}';
+    const DARK_THEME = '{{ $darkCSS.Permalink }}';
 
     const getThemeURL = (isDark) => isDark ? DARK_THEME : LIGHT_THEME;
 
