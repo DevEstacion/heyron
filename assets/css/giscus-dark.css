@@ -108,8 +108,8 @@ html, body, .App, .app,
 .Editor, .editor,
 .CommentForm, .comment-form,
 .reactions, .reaction-list {
-  background-color: var(--color-canvas-default) !important;
+  background-color: var(--color-base-100) !important;
   color: var(--color-fg-default) !important;
-  border-color: var(--color-border-default) !important;
-  border: 1px solid var(--color-border-default) !important;
+  border-color: var(--color-border-muted) !important;
+  border: 1px solid var(--color-border-muted) !important;
 }
