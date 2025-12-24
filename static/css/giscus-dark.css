@@ -31,27 +31,43 @@
   --color-prettylights-syntax-sublimelinter-gutter-mark: #484f58;
   --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
 
-  /* Main colors - Use CSS variables from theme-colors.css dark mode */
-  --color-canvas-default: var(--color-base-100);
-  --color-canvas-subtle: var(--color-base-200);
-  --color-border-default: var(--color-base-300);
-  --color-border-muted: var(--slate-grey-700);
+  /* Main colors - Concrete values for cross-origin iframe compatibility */
+  --color-canvas-default: #1f1f1f; /* fallback */
+  --color-canvas-default: oklch(12% 0.015 0); /* shadow-grey-900 */
+  --color-canvas-subtle: #292929; /* fallback */
+  --color-canvas-subtle: oklch(16% 0.014 0); /* shadow-grey-800 */
+  --color-border-default: #3d4a56; /* fallback */
+  --color-border-default: oklch(28% 0.030 250); /* slate-grey-800 */
+  --color-border-muted: #495561; /* fallback */
+  --color-border-muted: oklch(38% 0.035 250); /* slate-grey-700 */
 
-  /* Text colors - Use CSS variables from theme-colors.css dark mode */
-  --color-fg-default: var(--color-base-content);
-  --color-fg-muted: var(--slate-grey-400);
-  --color-fg-subtle: var(--slate-grey-500);
+  /* Text colors - Concrete values for cross-origin iframe compatibility */
+  --color-fg-default: #f5f1ed; /* fallback */
+  --color-fg-default: oklch(98% 0.008 60); /* parchment-100 */
+  --color-fg-muted: #8a9aaa; /* fallback */
+  --color-fg-muted: oklch(68% 0.030 250); /* slate-grey-400 */
+  --color-fg-subtle: #748191; /* fallback */
+  --color-fg-subtle: oklch(58% 0.036 250); /* slate-grey-500 */
 
-  /* Accent colors - Use primary color from theme-colors.css dark mode */
-  --color-accent-fg: var(--color-primary);
-  --color-accent-emphasis: var(--color-primary);
-  --color-accent-muted: var(--slate-grey-600);
-  --color-accent-subtle: var(--slate-grey-700);
+  /* Accent colors - Concrete values for cross-origin iframe compatibility */
+  --color-accent-fg: #8a9aaa; /* fallback */
+  --color-accent-fg: oklch(68% 0.030 250); /* slate-grey-400 */
+  --color-accent-emphasis: #8a9aaa; /* fallback */
+  --color-accent-emphasis: oklch(68% 0.030 250); /* slate-grey-400 */
+  --color-accent-muted: #5c6a7a; /* fallback */
+  --color-accent-muted: oklch(48% 0.038 250); /* slate-grey-600 */
+  --color-accent-subtle: #495561; /* fallback */
+  --color-accent-subtle: oklch(38% 0.035 250); /* slate-grey-700 */
 
-  /* Buttons - Use primary color from theme-colors.css dark mode */
-  --color-btn-primary-bg: var(--color-primary);
-  --color-btn-primary-border: var(--color-primary);
-  --color-btn-primary-text: var(--color-primary-content);
-  --color-btn-primary-hover-bg: var(--slate-grey-300);
-  --color-btn-primary-hover-border: var(--slate-grey-300);
+  /* Buttons - Concrete values for cross-origin iframe compatibility */
+  --color-btn-primary-bg: #8a9aaa; /* fallback */
+  --color-btn-primary-bg: oklch(68% 0.030 250); /* slate-grey-400 */
+  --color-btn-primary-border: #8a9aaa; /* fallback */
+  --color-btn-primary-border: oklch(68% 0.030 250); /* slate-grey-400 */
+  --color-btn-primary-text: #1f1f1f; /* fallback */
+  --color-btn-primary-text: oklch(12% 0.015 0); /* shadow-grey-900 */
+  --color-btn-primary-hover-bg: #a7b5c3; /* fallback */
+  --color-btn-primary-hover-bg: oklch(78% 0.024 250); /* slate-grey-300 */
+  --color-btn-primary-hover-border: #a7b5c3; /* fallback */
+  --color-btn-primary-hover-border: oklch(78% 0.024 250); /* slate-grey-300 */
 }

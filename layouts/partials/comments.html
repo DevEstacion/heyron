@@ -23,13 +23,23 @@
       const theme = isDark
         ? '{{ .Site.BaseURL }}css/giscus-dark.css'
         : '{{ .Site.BaseURL }}css/giscus-light.css';
-      const iframe = document.querySelector('iframe.giscus-frame');
-      if (iframe) {
-        iframe.contentWindow.postMessage(
-          { giscus: { setConfig: { theme } } },
-          'https://giscus.app'
-        );
-      }
+
+      // Wait for iframe with retry logic (max 5 seconds)
+      let attempts = 0;
+      const maxAttempts = 50; // 50 attempts * 100ms = 5 seconds
+      const checkIframe = setInterval(() => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (iframe) {
+          clearInterval(checkIframe);
+          iframe.contentWindow.postMessage(
+            { giscus: { setConfig: { theme } } },
+            'https://giscus.app'
+          );
+        } else if (++attempts >= maxAttempts) {
+          clearInterval(checkIframe);
+          console.warn('Giscus iframe not found after 5 seconds');
+        }
+      }, 100);
     });
   });
 </script>
