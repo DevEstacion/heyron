@@ -38,12 +38,29 @@
     // Listen for theme changes after Alpine initializes
     document.addEventListener('alpine:initialized', () => {
       Alpine.effect(() => {
-        const iframe = document.querySelector('iframe.giscus-frame');
-        if (iframe) {
-          iframe.contentWindow.postMessage(
-            { giscus: { setConfig: { theme: getThemeURL(Alpine.store('darkMode').isDark()) } } },
-            'https://giscus.app'
-          );
+        const theme = getThemeURL(Alpine.store('darkMode').isDark());
+
+        // Wait for iframe to be ready before sending theme update
+        const sendTheme = () => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (iframe) {
+            iframe.contentWindow.postMessage(
+              { giscus: { setConfig: { theme } } },
+              'https://giscus.app'
+            );
+            return true;
+          }
+          return false;
+        };
+
+        // Try immediately, then retry if needed
+        if (!sendTheme()) {
+          let attempts = 0;
+          const interval = setInterval(() => {
+            if (sendTheme() || ++attempts >= 50) {
+              clearInterval(interval);
+            }
+          }, 100);
         }
       });
     });
