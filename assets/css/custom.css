@@ -61,6 +61,12 @@ article.prose img {
   margin-inline: auto;
 }
 
+/* Center text helper for shortcodes or inline HTML */
+.center {
+  text-align: center;
+  margin: 0.75rem 0;
+}
+
 /* Temporary overlay while Mermaid renders diagrams */
 .mermaid {
   position: relative;
